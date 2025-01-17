@@ -1,3 +1,33 @@
+
+<?php
+
+    require_once '../classes/database.php';
+    require_once '../classes/cours.php';
+    $cour = '';
+
+    if(isset($_GET['cours']) && !empty($_GET['cours'])){
+
+        $getCourId = htmlspecialchars(trim($_GET['cours']));
+        if(!empty($getCourId)){
+            $instance = new cours();
+            $cour = $instance->getSingleCour($getCourId,Database::getInstance()->getConnect());
+            if($cour == null){
+                die('No cour exict');
+            }
+        }else{
+            die('No cour exict');
+        }
+    }else{
+        die('No cour exict');
+    }
+
+?>
+
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,21 +57,54 @@
         <!-- Course Details -->
         <section class="mb-12 bg-white rounded-2xl shadow-xl p-8">
             <div class="max-w-3xl">
-                <h1 class="text-4xl font-bold text-gray-800 mb-6 leading-tight">Introduction to Programming</h1>
-                <p class="text-xl text-gray-600 mb-8 leading-relaxed">Learn the basics of programming with hands-on projects and step-by-step guidance. Perfect for beginners looking to start their coding journey.</p>
+                <h1 class="text-4xl font-bold text-gray-800 mb-6 leading-tight"><?php
+                    if(isset($cour) && !empty($cour)){
+                        echo $cour['titre'];
+                    }
+                 ?></h1>
+                <p class="text-xl text-gray-600 mb-8 leading-relaxed"><?php
+                    if(isset($cour) && !empty($cour)){
+                        echo $cour['description'];
+                    }
+                 ?></p>
                 
                 <div class="flex flex-wrap items-center gap-6 mb-8">
                     <div class="flex items-center gap-2">
-                        <img src="/api/placeholder/40/40" alt="John Doe" class="rounded-full ring-2 ring-indigo-500">
                         <div>
                             <p class="text-gray-800 font-medium">Created by:</p>
-                            <p class="text-indigo-600 font-semibold">John Doe</p>
+                            <p class="text-indigo-600 font-semibold"><?php
+                    if(isset($cour) && !empty($cour)){
+                        echo $cour['prenom'] . ' ' . $cour['nom'];
+                    }
+                 ?></p>
                         </div>
                     </div>
                     <div class="flex flex-wrap gap-2">
-                        <span class="bg-indigo-100 text-indigo-700 px-4 py-2 rounded-full text-sm font-medium hover:bg-indigo-200 transition-colors">#Programming</span>
+                        <?php
+
+                            require_once '../classes/tags.php';
+                            $instanceTags = new tags();
+                            $getTags = $instanceTags->tags($getCourId,Database::getInstance()->getConnect());
+
+                            if($getTags != null && $getTags->rowCount() > 0){
+                                $colors = ['indigo','purple','blue'];
+                                $count = 0;
+
+                                foreach($getTags as $tag){
+                                    echo '<span class="bg-'.$colors[$count].'-100 text-'.$colors[$count].'-700 px-4 py-2 rounded-full text-sm font-medium hover:bg-indigo-200 transition-colors">#'.$tag['name'].'</span>';
+                                    if($count < count($colors)){
+                                        $count++;
+                                    }else{
+                                        $count = 0;
+                                    }
+                                }
+                            }
+
+
+                        ?>
+                        <!-- <span class="bg-indigo-100 text-indigo-700 px-4 py-2 rounded-full text-sm font-medium hover:bg-indigo-200 transition-colors">#Programming</span>
                         <span class="bg-purple-100 text-purple-700 px-4 py-2 rounded-full text-sm font-medium hover:bg-purple-200 transition-colors">#Beginner</span>
-                        <span class="bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-medium hover:bg-blue-200 transition-colors">#Coding</span>
+                        <span class="bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-medium hover:bg-blue-200 transition-colors">#Coding</span> -->
                     </div>
                 </div>
 

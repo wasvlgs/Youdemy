@@ -22,9 +22,9 @@
         private $id_category;
 
 
-        public function __construct($id_content,$titre,$desc,$content,$id_teacher,$id_category)
+        public function __construct($id_cour = null,$titre = null,$desc = null,$content = null,$id_teacher = null,$id_category = null)
         {
-            $this->id_cours = $id_category;
+            $this->id_cours = $id_cour;
             $this->titre = $titre;
             $this->desc = $desc;
             $this->content = $content;
@@ -33,9 +33,31 @@
         }
 
 
-        public static function getCours(){
-            $conn = Database::getInstance()->getConnect();
-            $getData = $conn->prepare("SELECT");
+        public static function getCours($conn,$offSet = 0){
+            
+            $getData = $conn->prepare("SELECT * FROM cours INNER JOIN users ON cours.id_user = users.id_user INNER JOIN categorie ON cours.id_categorie = categorie.id_categorie WHERE id_approved = '1' LIMIT 6 offset :offset");
+            $getData->bindParam(":offset",$offSet,PDO::PARAM_INT);
+            
+            
+            if($getData->execute()){
+                return [
+                    "data"=> $getData,
+                    "pages" => ceil($getData->rowCount()/6),
+                ];
+            }else{
+                return null;
+            }
+        }
+
+        public function getSingleCour($getID,$conn){
+            $this->id_cours = $getID;
+            $getCour = $conn->prepare("SELECT * FROM cours INNER JOIN users ON cours.id_user = users.id_user WHERE id_cours = :getID");
+            $getCour->bindParam(":getID",$this->id_cours);
+            if($getCour->execute() && $getCour->rowCount() === 1){
+                return $getCour->fetch(PDO::FETCH_ASSOC);
+            }else{
+                return null;
+            }
         }
     }
 

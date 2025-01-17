@@ -1,3 +1,17 @@
+<?php
+
+
+
+require_once '../classes/database.php';
+
+
+?>
+
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -78,19 +92,85 @@
 
             <?php
 
+                require_once '../classes/cours.php';
+                if(isset($_GET['page']) && !empty($_GET['page'])){
+                    $getPage = htmlspecialchars(trim($_GET['page']));
+                    if(!empty($getPage)){
+                        $getOffSet = ($getPage-1)*6;
+                    }
+                }
+                $getCours = cours::getCours(Database::getInstance()->getConnect(),$getOffSet);
+                if($getCours != null && $getCours['data']->rowCount() > 0){
+                    $getPages = $getCours['pages'];
+                    foreach ($getCours['data'] as $cours) {
+                        $getDesc = substr($cours['description'],0,100);
+                        echo '<div class="bg-white shadow-xl rounded-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-2xl max-w-sm">
+                    <!-- Image Section -->
+                    <div class="relative">
+                        <img 
+                            src="../../public/img/coursImage/'.$cours['imgSrc'].'" 
+                            alt="Course Image" 
+                            class="w-full h-52 object-cover"
+                        />
+                        <div class="absolute top-4 right-4 bg-white px-3 py-1 rounded-full text-sm font-medium text-indigo-600">
+                            '.$cours['name'].'
+                        </div>
+                    </div>
 
+                    <!-- Content Section -->
+                    <div class="p-6">
+                        <!-- Author and Date -->
+                        <div class="flex items-center space-x-4 mb-4">
+                            <div class="flex items-center text-gray-500 text-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                </svg>
+                                <span>'.$cours['prenom'].' '.$cours['nom'].'</span>
+                            </div>
+                            <div class="flex items-center text-gray-500 text-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                <span>'.$cours['date_create'].'</span>
+                            </div>
+                        </div>
+
+                        <!-- Course Title and Description -->
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">
+                            '.$cours['titre'].'
+                        </h3>
+                        
+                        <p class="text-gray-600 mb-4">
+                            '.$getDesc.'...
+                        </p>
+
+
+
+                        <!-- Action Button and Rating -->
+                        <div class="flex justify-between items-center">
+                            <a 
+                                href="cour.php"
+                                target="_blank" 
+                                class="inline-flex items-center px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition duration-200"
+                            >
+                                View Details
+                            </a>
+                            <div class="flex items-center space-x-1">
+                                <span class="text-yellow-400">★★★★</span>
+                                <span class="text-gray-400">★</span>
+                                <span class="text-sm text-gray-600 ml-1">(4.0)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>';
+                    }
+                }else{
+                    echo 'No cours exict';
+                }
 
             ?>
 
-            <!-- <div class="bg-white shadow-xl rounded-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-2xl">
-                <img src="/images/course1.jpg" alt="Course Image" class="w-full h-48 object-cover">
-                <div class="p-6">
-                    <h3 class="text-xl font-semibold text-gray-800">Introduction to Programming</h3>
-                    <p class="mt-3 text-gray-600">Learn the basics of programming with hands-on projects.</p>
-                    <button class="mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none transition duration-200">View Details</button>
-                </div>
-            </div>
-
+            <!-- 
 
             <div class="bg-white shadow-xl rounded-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-2xl">
                 <img src="/images/course2.jpg" alt="Course Image" class="w-full h-48 object-cover">
@@ -106,11 +186,27 @@
 
         <!-- Pagination -->
         <div class="mt-12 flex justify-center space-x-4">
-            <button class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg shadow-md hover:bg-gray-200 focus:outline-none transition duration-200">Previous</button>
-            <button class="px-6 py-2 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none transition duration-200">1</button>
-            <button class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg shadow-md hover:bg-gray-200 focus:outline-none transition duration-200">2</button>
-            <button class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg shadow-md hover:bg-gray-200 focus:outline-none transition duration-200">3</button>
-            <button class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg shadow-md hover:bg-gray-200 focus:outline-none transition duration-200">Next</button>
+            <?php
+
+                if(isset($getPages) && $getPages == 1){
+                    echo '<a href="catalogue.php?page=1" class="px-6 py-2 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none transition duration-200">1</a>';
+                }elseif(isset($getPages) && $getPages > 1 && isset($_GET['page'])){
+                    if(htmlspecialchars(trim($_GET['page'])) > 1){
+                        echo '<a href="'.(htmlspecialchars(trim($_GET['page'])) - 1).'" class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg shadow-md hover:bg-gray-200 focus:outline-none transition duration-200">Previous</a>';
+                    }
+                    for($i = 1; $i <= $getPages; $i++){
+                        echo '<a href="catalogue.php?page='.$i.'" class="px-6 py-2 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none transition duration-200">'.$i.'</a>';
+                    }
+                    echo '<a href="catalogue.php?page='.(htmlspecialchars(trim($_GET['page'])) + 1).'" class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg shadow-md hover:bg-gray-200 focus:outline-none transition duration-200">Next</a>';
+                }
+
+
+            ?>
+            <!-- <a href="#" class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg shadow-md hover:bg-gray-200 focus:outline-none transition duration-200">Previous</a>
+            <a href="#" class="px-6 py-2 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none transition duration-200">1</a>
+            <a href="#" class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg shadow-md hover:bg-gray-200 focus:outline-none transition duration-200">2</a>
+            <a href="#" class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg shadow-md hover:bg-gray-200 focus:outline-none transition duration-200">3</a>
+            <a href="#" class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg shadow-md hover:bg-gray-200 focus:outline-none transition duration-200">Next</a> -->
         </div>
     </main>
 
