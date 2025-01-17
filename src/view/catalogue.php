@@ -40,33 +40,22 @@
                 <button class="px-6 py-2 bg-indigo-100 rounded-lg text-indigo-700 shadow-md hover:bg-indigo-200 transition duration-300 flex-shrink-0">
                     All
                 </button>
-                <button class="px-6 py-2 bg-gray-100 rounded-lg text-gray-700 shadow-md hover:bg-gray-200 transition duration-300 flex-shrink-0">
-                    Web Development
-                </button>
-                <button class="px-6 py-2 bg-gray-100 rounded-lg text-gray-700 shadow-md hover:bg-gray-200 transition duration-300 flex-shrink-0">
-                    Data Science
-                </button>
-                <button class="px-6 py-2 bg-gray-100 rounded-lg text-gray-700 shadow-md hover:bg-gray-200 transition duration-300 flex-shrink-0">
-                    Design
-                </button>
-                <button class="px-6 py-2 bg-gray-100 rounded-lg text-gray-700 shadow-md hover:bg-gray-200 transition duration-300 flex-shrink-0">
-                    Marketing
-                </button>
-                <button class="px-6 py-2 bg-gray-100 rounded-lg text-gray-700 shadow-md hover:bg-gray-200 transition duration-300 flex-shrink-0">
-                    Business
-                </button>
-                <button class="px-6 py-2 bg-gray-100 rounded-lg text-gray-700 shadow-md hover:bg-gray-200 transition duration-300 flex-shrink-0">
-                    Marketing
-                </button>
-                <button class="px-6 py-2 bg-gray-100 rounded-lg text-gray-700 shadow-md hover:bg-gray-200 transition duration-300 flex-shrink-0">
-                    Business
-                </button>
-                <button class="px-6 py-2 bg-gray-100 rounded-lg text-gray-700 shadow-md hover:bg-gray-200 transition duration-300 flex-shrink-0">
-                    Marketing
-                </button>
-                <button class="px-6 py-2 bg-gray-100 rounded-lg text-gray-700 shadow-md hover:bg-gray-200 transition duration-300 flex-shrink-0">
-                    Business
-                </button>
+
+                <?php
+
+                    require_once '../classes/categorie.php';
+                    $getCategories = categorie::getCategories();
+
+                    if($getCategories != null && $getCategories->rowCount() > 0){
+                        foreach($getCategories as $categorie){
+                            echo '<button class="px-6 py-2 bg-gray-100 rounded-lg text-gray-700 shadow-md hover:bg-gray-200 transition duration-300 flex-shrink-0">
+                                '.$categorie['name'].'
+                            </button>';
+                        }
+                    }
+
+
+                ?>
             </div>
 
             
@@ -85,8 +74,15 @@
 
         <!-- Course Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12">
-            <!-- Course Card 1 -->
-            <div class="bg-white shadow-xl rounded-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-2xl">
+
+
+            <?php
+
+
+
+            ?>
+
+            <!-- <div class="bg-white shadow-xl rounded-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-2xl">
                 <img src="/images/course1.jpg" alt="Course Image" class="w-full h-48 object-cover">
                 <div class="p-6">
                     <h3 class="text-xl font-semibold text-gray-800">Introduction to Programming</h3>
@@ -95,7 +91,7 @@
                 </div>
             </div>
 
-            <!-- Course Card 2 (Example) -->
+
             <div class="bg-white shadow-xl rounded-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-2xl">
                 <img src="/images/course2.jpg" alt="Course Image" class="w-full h-48 object-cover">
                 <div class="p-6">
@@ -103,7 +99,7 @@
                     <p class="mt-3 text-gray-600">Master HTML, CSS, JavaScript, and React in this bootcamp.</p>
                     <button class="mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none transition duration-200">View Details</button>
                 </div>
-            </div>
+            </div> -->
 
             <!-- Repeat above card block for additional courses -->
         </div>
