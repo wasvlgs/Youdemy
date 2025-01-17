@@ -74,10 +74,10 @@ require_once '../classes/database.php';
 
             
             <!-- Search Bar -->
-            <div class="flex items-center space-x-4">
-                <input type="text" placeholder="Search courses..." class="px-4  py-2 w-64 ring-[1px] rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-600">
-                <button class="bg-indigo-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none transition duration-200">Search</button>
-            </div>
+            <form method="post" class="flex items-center space-x-4">
+                <input name="searchValue" type="text" placeholder="Search courses..." class="px-4  py-2 w-64 ring-[1px] rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-600">
+                <button name="search" class="bg-indigo-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none transition duration-200">Search</button>
+            </form>
         </div>
     </header>
 
@@ -93,7 +93,8 @@ require_once '../classes/database.php';
             <?php
 
                 $getOffSet = '';
-                $getCategorie = '';
+                $getIdCategorie = '';
+                $getSearchValue = '';
                 require_once '../classes/cours.php';
                 if(isset($_GET['page']) && !empty($_GET['page'])){
                     $getPage = htmlspecialchars(trim($_GET['page']));
@@ -103,11 +104,11 @@ require_once '../classes/database.php';
                 }
                 if(isset($_GET['catalogue']) && !empty($_GET['catalogue'])){
                     $getIdCategorie = htmlspecialchars(trim($_GET['catalogue']));
-                    if(!empty($getPage)){
-                        $getOffSet = ($getPage-1)*6;
-                    }
                 }
-                $getCours = cours::getCours(Database::getInstance()->getConnect(),$getOffSet,$getCategorie);
+                if(isset($_POST['search']) && !empty($_POST['searchValue'])){
+                    $getSearchValue = htmlspecialchars(trim($_POST['searchValue']));
+                }
+                $getCours = cours::getCours(Database::getInstance()->getConnect(),$getOffSet,$getIdCategorie,$getSearchValue);
                 if($getCours != null && $getCours['data']->rowCount() > 0){
                     $getPages = $getCours['pages'];
                     foreach ($getCours['data'] as $cours) {
