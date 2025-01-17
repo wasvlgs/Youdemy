@@ -51,9 +51,9 @@ require_once '../classes/database.php';
         <div class="container mx-auto px-6 md:px-12 flex justify-between items-center space-x-6">
             <!-- Category Buttons -->
             <div class="flex overflow-x-auto space-x-4 py-2 px-4 sm:px-6 custom-scrollbar">
-                <button class="px-6 py-2 bg-indigo-100 rounded-lg text-indigo-700 shadow-md hover:bg-indigo-200 transition duration-300 flex-shrink-0">
+                <a href="catalogue.php" class="px-6 py-2 bg-indigo-100 rounded-lg text-indigo-700 shadow-md hover:bg-indigo-200 transition duration-300 flex-shrink-0">
                     All
-                </button>
+                </a>
 
                 <?php
 
@@ -62,9 +62,9 @@ require_once '../classes/database.php';
 
                     if($getCategories != null && $getCategories->rowCount() > 0){
                         foreach($getCategories as $categorie){
-                            echo '<button class="px-6 py-2 bg-gray-100 rounded-lg text-gray-700 shadow-md hover:bg-gray-200 transition duration-300 flex-shrink-0">
+                            echo '<a href="catalogue.php?catalogue='.$categorie['id_categorie'].'&page=1" class="px-6 py-2 bg-gray-100 rounded-lg text-gray-700 shadow-md hover:bg-gray-200 transition duration-300 flex-shrink-0">
                                 '.$categorie['name'].'
-                            </button>';
+                            </a>';
                         }
                     }
 
@@ -92,6 +92,8 @@ require_once '../classes/database.php';
 
             <?php
 
+                $getOffSet = '';
+                $getCategorie = '';
                 require_once '../classes/cours.php';
                 if(isset($_GET['page']) && !empty($_GET['page'])){
                     $getPage = htmlspecialchars(trim($_GET['page']));
@@ -99,7 +101,13 @@ require_once '../classes/database.php';
                         $getOffSet = ($getPage-1)*6;
                     }
                 }
-                $getCours = cours::getCours(Database::getInstance()->getConnect(),$getOffSet);
+                if(isset($_GET['catalogue']) && !empty($_GET['catalogue'])){
+                    $getIdCategorie = htmlspecialchars(trim($_GET['catalogue']));
+                    if(!empty($getPage)){
+                        $getOffSet = ($getPage-1)*6;
+                    }
+                }
+                $getCours = cours::getCours(Database::getInstance()->getConnect(),$getOffSet,$getCategorie);
                 if($getCours != null && $getCours['data']->rowCount() > 0){
                     $getPages = $getCours['pages'];
                     foreach ($getCours['data'] as $cours) {
@@ -149,7 +157,7 @@ require_once '../classes/database.php';
                         <!-- Action Button and Rating -->
                         <div class="flex justify-between items-center">
                             <a 
-                                href="cour.php"
+                                href="cour.php?cours='.$cours['id_cours'].'"
                                 target="_blank" 
                                 class="inline-flex items-center px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition duration-200"
                             >
