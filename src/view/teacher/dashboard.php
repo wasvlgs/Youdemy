@@ -1,3 +1,35 @@
+<?php
+
+
+    session_start();
+
+    require_once '../../classes/database.php';
+    require_once '../../classes/cours.php';
+
+    if(isset($_SESSION['id']) && isset($_SESSION['role']) && $_SESSION['role'] == 2){
+
+        $instanceCours = new cours();
+        $getCount = $instanceCours->myCoursCount($_SESSION['id'],Database::getInstance()->getConnect());
+        $getMyStudents = $instanceCours->myStudentCount($_SESSION['id'],Database::getInstance()->getConnect());
+        $getCour = $instanceCours->getBestCours($_SESSION['id'],Database::getInstance()->getConnect());
+        $getRecentActivites = $instanceCours->recentActivities($_SESSION['id'],Database::getInstance()->getConnect());
+
+
+        if(isset($_POST['logout'])){
+            session_destroy();
+            header('Location: ../../../index.php');
+            die();
+        }
+    }else{
+        session_destroy();
+        header('Location: ../login/login.php');
+        die();
+    }
+
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -46,7 +78,13 @@
                                 <div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center">
                                     <i class="fas fa-book text-2xl text-indigo-600"></i>
                                 </div>
-                                <h2 class="text-3xl font-bold text-gray-800">5</h2>
+                                <h2 class="text-3xl font-bold text-gray-800"><?php 
+                                    if($getCount > 0){
+                                        echo $getCount;
+                                    }else{
+                                        echo 0;
+                                    }
+                                 ?></h2>
                             </div>
                             <p class="text-gray-600 font-medium">Total Courses</p>
                         </div>
@@ -57,20 +95,50 @@
                                 <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
                                     <i class="fas fa-users text-2xl text-purple-600"></i>
                                 </div>
-                                <h2 class="text-3xl font-bold text-gray-800">120</h2>
+                                <h2 class="text-3xl font-bold text-gray-800">
+                                    <?php 
+                                        if($getMyStudents > 0){
+                                            echo $getMyStudents;
+                                        }else{
+                                            echo 0;
+                                        }
+                                    ?>
+                                </h2>
                             </div>
                             <p class="text-gray-600 font-medium">Total Students</p>
                         </div>
 
                         <!-- Active Enrollments -->
                         <div class="bg-white shadow-lg rounded-xl p-6 hover:shadow-xl transition-shadow">
-                            <div class="flex items-center justify-between mb-4">
-                                <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                                    <i class="fas fa-user-graduate text-2xl text-green-600"></i>
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-star text-2xl text-yellow-600"></i>
                                 </div>
-                                <h2 class="text-3xl font-bold text-gray-800">15</h2>
                             </div>
-                            <p class="text-gray-600 font-medium">Active Enrollments</p>
+                            <p class="text-gray-600 font-medium mb-2">Best Course</p>
+                            <div class="bg-yellow-50 rounded-lg p-2 mt-1">
+                                <h3 class="text-sm font-semibold text-gray-800 truncate">
+                                    <?php
+
+                                        if($getCour != null){
+                                            echo $getCour['titre'];
+                                        }else{
+                                            echo 'No cour exict';
+                                        }
+                                    ?>
+                                </h3>
+                                <div class="flex items-center text-xs text-gray-500 mt-1">
+                                    <i class="fas fa-user-graduate mr-1"></i>
+                                    <span><?php
+
+                                        if($getCour != null){
+                                            echo $getCour['joinCount'];
+                                        }else{
+                                            echo 0;
+                                        }
+                                        ?> students enrolled</span>
+                                </div>
+                            </div>
                         </div>
                     </section>
 
@@ -106,7 +174,40 @@
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-gray-200">
-                                        <tr class="hover:bg-gray-50 transition-colors">
+
+                                        <?php
+
+                                            if($getRecentActivites != null && $getRecentActivites->rowCount() > 0){
+                                                $colors = ['blue','purple','green'];
+                                                $count = 0;
+                                                foreach($getRecentActivites as $activitie){
+                                                    echo '<tr class="hover:bg-gray-50 transition-colors">
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="flex items-center">
+                                                    '.$activitie['prenom'].' '.$activitie['nom'].'
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                <span class="bg-'.$colors[$count].'-100 text-'.$colors[$count].'-800 px-3 py-1 rounded-full text-sm font-medium">
+                                                    '.$activitie['titre'].'
+                                                </span>
+                                            </td>
+                                            <td class="px-6 py-4 text-gray-500">'.$activitie['date_join'].'</td>
+                                        </tr>';
+                                                    if($count < count($colors) -1){
+                                                        $count++;
+                                                    }else{
+                                                        $count = 0;
+                                                    }
+                                                }
+                                            }else{
+                                                echo 'No activity exict';
+                                            }
+                                        
+                                        ?>
+
+
+                                        <!-- <tr class="hover:bg-gray-50 transition-colors">
                                             <td class="px-6 py-4 whitespace-nowrap">
                                                 <div class="flex items-center">
                                                     <img src="/api/placeholder/32/32" class="rounded-full mr-3">
@@ -147,7 +248,7 @@
                                                 </span>
                                             </td>
                                             <td class="px-6 py-4 text-gray-500">2025-01-08</td>
-                                        </tr>
+                                        </tr> -->
                                     </tbody>
                                 </table>
                             </div>

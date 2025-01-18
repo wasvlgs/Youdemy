@@ -96,13 +96,59 @@
         public function joinCour($user,$cours,$conn){
             $this->id_user = $user;
             $this->id_cours = $cours;
-            $join = $conn->prepare("INSERT INTO mycours(id_cours,id_user) VALUES(:cours,:user)");
+            $join = $conn->prepare("INSERT INTO mycours(id_cours,id_user,date_join) VALUES(:cours,:user,CURRENT_TIME)");
             $join->bindParam(":cours",$cours);
             $join->bindParam(":user",$user);
             if($join->execute()){
                 header('Location: student/mescours.php');
             }else{
                 echo '<script>alert("Error try again!")</script>';
+            }
+        }
+
+        public function myCoursCount($getID,$conn){
+
+            $this->id_user = $getID;
+            $getCount = $conn->prepare("SELECT count(*) as total FROM cours WHERE id_user = :getID");
+            $getCount->bindParam(":getID",$this->id_user);
+            if($getCount->execute()){
+                $getRow = $getCount->fetch(PDO::FETCH_ASSOC);
+                return $getRow['total'];
+            }else{
+                return null;
+            }
+        }
+
+        public function myStudentCount($getID,$conn){
+
+            $myStudentCount = $conn->prepare("SELECT COUNT(DISTINCT users.id_user) AS total FROM users INNER JOIN mycours ON users.id_user = mycours.id_user INNER JOIN cours ON cours.id_cours = mycours.id_cours WHERE cours.id_user = :getID");
+            $myStudentCount->bindParam(":getID",$getID);
+            if($myStudentCount->execute() && $myStudentCount->rowCount() > 0){
+                $getRow = $myStudentCount->fetch(PDO::FETCH_ASSOC);
+                return $getRow['total'];
+            }else{
+                return null;
+            }
+        }
+
+        public function getBestCours($getID,$conn){
+            $getCours = $conn->prepare("SELECT titre,COUNT(cours.id_cours) AS joinCount FROM cours INNER JOIN mycours ON cours.id_cours = mycours.id_cours WHERE cours.id_user = :getID GROUP BY cours.id_cours ORDER BY joinCount DESC LIMIT 1");
+            $getCours->bindParam(":getID",$getID);
+            if($getCours->execute()){
+                return $getCours->fetch(PDO::FETCH_ASSOC);
+            }else{
+                return null;
+            }
+        }
+
+        public function recentActivities($getID,$conn){
+            $this->id_user = $getID;
+            $getActivities = $conn->prepare("SELECT nom,prenom,titre,date_join FROM users INNER JOIN mycours ON users.id_user = mycours.id_user INNER JOIN cours ON mycours.id_cours = cours.id_cours WHERE cours.id_user = :getID ORDER BY date_join DESC LIMIT 3");
+            $getActivities->bindParam(":getID",$getID);
+            if($getActivities->execute()){
+                return $getActivities;
+            }else{
+                return null;
             }
         }
     }

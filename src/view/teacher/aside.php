@@ -16,10 +16,10 @@
                     My Courses
                 </a>
             </nav>
-            <div class="p-6">
-                <button class="w-full bg-red-500 py-3 px-4 rounded-lg hover:bg-red-600 transition-colors flex items-center justify-center gap-2">
+            <form method="post" class="p-6">
+                <button name="logout" class="w-full bg-red-500 py-3 px-4 rounded-lg hover:bg-red-600 transition-colors flex items-center justify-center gap-2">
                     <i class="fas fa-sign-out-alt"></i>
                     Log Out
                 </button>
-            </div>
+            </form>
         </aside>

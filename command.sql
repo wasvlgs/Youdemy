@@ -63,3 +63,6 @@ id_cours int NOT null,
 
 CREATE TABLE mycours(id_cours int NOT null, id_user int NOT null, FOREIGN KEY (id_cours) REFERENCES cours(id_cours) ON DELETE CASCADE ON UPDATE CASCADE,
  FOREIGN KEY (id_user) REFERENCES users(id_user) ON DELETE CASCADE ON UPDATE CASCADE);
+
+
+ SELECT titre,COUNT(cours.id_cours) AS joinCount FROM cours INNER JOIN mycours ON cours.id_cours = mycours.id_cours WHERE cours.id_user = 20 GROUP BY cours.id_cours ORDER BY joinCount DESC LIMIT 1;

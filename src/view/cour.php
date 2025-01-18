@@ -10,19 +10,19 @@
     $getButton = '';
 
 
-    if(isset($_GET['cours']) && !empty($_GET['cours'])){
+    if(isset($_SESSION['id']) && isset($_SESSION['role']) && !empty($_SESSION['id']) && !empty($_SESSION['role'])){
 
-        $getCourId = htmlspecialchars(trim($_GET['cours']));
-        if(!empty($getCourId)){
+        if(isset($_GET['cours']) && !empty($_GET['cours'])){
+
+            $getCourId = htmlspecialchars(trim($_GET['cours']));
 
 
-
-                if(isset($_SESSION['id']) && isset($_SESSION['role']) && !empty($_SESSION['id']) && !empty($_SESSION['role']) && $_SESSION['role'] == 3){
+                if($_SESSION['role'] == 3 && !empty($getCourId)){
                 if(isset($_POST['join'])){
                     $instance->joinCour($_SESSION['id'],$getCourId,Database::getInstance()->getConnect());
                 }
                 $getCount = $instance->checkMyCour($_SESSION['id'],$getCourId,Database::getInstance()->getConnect());
-                if($getCount == 1){
+                if($getCount == 1 && !empty($getCourId)){
                     $getButton = '<a href="student/mescours.php" class="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-full font-medium transition-all transform hover:scale-105 hover:shadow-lg">
                     Joined
                 </a>';
