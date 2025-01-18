@@ -11,42 +11,18 @@
     <!-- Page Wrapper -->
     <div class="flex h-screen">
         <!-- Sidebar -->
-        <aside class="w-64 bg-gradient-to-b from-indigo-600 to-indigo-800 text-white flex flex-col">
-            <div class="p-8 text-center border-b border-indigo-500/30">
-                <h1 class="text-2xl font-bold tracking-wider">Youdemy</h1>
-            </div>
-            <nav class="flex-grow py-6">
-                <a href="#" class="flex items-center px-8 py-4 text-lg bg-indigo-500/30 border-l-4 border-white">
-                    <i class="fas fa-chart-line w-6 mr-3"></i>
-                    Dashboard
-                </a>
-                <a href="#" class="flex items-center px-8 py-4 text-lg hover:bg-indigo-500/50 transition-colors">
-                    <i class="fas fa-users w-6 mr-3"></i>
-                    Students
-                </a>
-                <a href="#" class="flex items-center px-8 py-4 text-lg hover:bg-indigo-500/50 transition-colors">
-                    <i class="fas fa-book w-6 mr-3"></i>
-                    My Courses
-                </a>
-            </nav>
-            <div class="p-6">
-                <button class="w-full bg-red-500 py-3 px-4 rounded-lg hover:bg-red-600 transition-colors flex items-center justify-center gap-2">
-                    <i class="fas fa-sign-out-alt"></i>
-                    Log Out
-                </button>
-            </div>
-        </aside>
+        <?php include_once 'aside.php'; ?>
 
         <!-- Main Content -->
         <div class="flex-grow flex flex-col">
             <!-- Header -->
             <header class="bg-white shadow-md px-8 py-4 flex justify-between items-center">
                 <div class="flex items-center space-x-6">
-                    <a href="index.html" class="text-gray-700 text-lg font-medium hover:text-indigo-600 transition-colors flex items-center gap-2">
+                    <a href="../../../index.php" class="text-gray-700 text-lg font-medium hover:text-indigo-600 transition-colors flex items-center gap-2">
                         <i class="fas fa-home"></i>
                         Home
                     </a>
-                    <a href="catalogue.html" class="text-gray-700 text-lg font-medium hover:text-indigo-600 transition-colors flex items-center gap-2">
+                    <a href="../catalogue.php" class="text-gray-700 text-lg font-medium hover:text-indigo-600 transition-colors flex items-center gap-2">
                         <i class="fas fa-th-large"></i>
                         Catalogue
                     </a>

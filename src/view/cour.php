@@ -5,12 +5,34 @@
     require_once '../classes/database.php';
     require_once '../classes/cours.php';
     $cour = '';
+    $instance = new cours();
+
+    $getButton = '';
+
 
     if(isset($_GET['cours']) && !empty($_GET['cours'])){
 
         $getCourId = htmlspecialchars(trim($_GET['cours']));
         if(!empty($getCourId)){
-            $instance = new cours();
+
+
+
+                if(isset($_SESSION['id']) && isset($_SESSION['role']) && !empty($_SESSION['id']) && !empty($_SESSION['role']) && $_SESSION['role'] == 3){
+                if(isset($_POST['join'])){
+                    $instance->joinCour($_SESSION['id'],$getCourId,Database::getInstance()->getConnect());
+                }
+                $getCount = $instance->checkMyCour($_SESSION['id'],$getCourId,Database::getInstance()->getConnect());
+                if($getCount == 1){
+                    $getButton = '<a href="student/mescours.php" class="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-full font-medium transition-all transform hover:scale-105 hover:shadow-lg">
+                    Joined
+                </a>';
+                }else{
+                    $getButton = '<form method="POST"><button name="join" class="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-full font-medium transition-all transform hover:scale-105 hover:shadow-lg">
+                    Join the Course
+                </button></form>';
+                }
+            }
+            
             $cour = $instance->getSingleCour($getCourId,Database::getInstance()->getConnect());
             if($cour == null){
                 die('No cour exict');
@@ -21,6 +43,8 @@
     }else{
         die('No cour exict');
     }
+
+    
 
 ?>
 
@@ -108,9 +132,7 @@
                     </div>
                 </div>
 
-                <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-full font-medium transition-all transform hover:scale-105 hover:shadow-lg">
-                    Join the Course
-                </button>
+                <?php echo $getButton; ?>
             </div>
         </section>
 

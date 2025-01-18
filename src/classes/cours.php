@@ -16,18 +16,18 @@
         private $titre;
         private $desc;
         private $content;
-        private $id_teacher;
         private $id_category;
+        private $id_user;
 
 
-        public function __construct($id_cour = null,$titre = null,$desc = null,$content = null,$id_teacher = null,$id_category = null)
+        public function __construct($id_cour = null,$titre = null,$desc = null,$content = null, $id_user = null,$id_category = null)
         {
             $this->id_cours = $id_cour;
             $this->titre = $titre;
             $this->desc = $desc;
             $this->content = $content;
-            $this->id_teacher = $id_teacher;
             $this->id_category = $id_category;
+            $this->id_user = $id_user;
         }
 
 
@@ -77,6 +77,32 @@
                 return $getMyCours;
             }else{
                 return null;
+            }
+        }
+
+        public function checkMyCour($user,$cours,$conn){
+            $this->id_cours = $cours;
+            $this->id_user = $user;
+            $getCount = $conn->prepare("SELECT * FROM mycours WHERE id_cours = :cours AND id_user = :user");
+            $getCount->bindParam(":cours",$this->id_cours);
+            $getCount->bindParam(":user",$this->id_user);
+            if($getCount->execute()){
+                return $getCount->rowCount();
+            }else{
+                return null;
+            }
+        }
+
+        public function joinCour($user,$cours,$conn){
+            $this->id_user = $user;
+            $this->id_cours = $cours;
+            $join = $conn->prepare("INSERT INTO mycours(id_cours,id_user) VALUES(:cours,:user)");
+            $join->bindParam(":cours",$cours);
+            $join->bindParam(":user",$user);
+            if($join->execute()){
+                header('Location: student/mescours.php');
+            }else{
+                echo '<script>alert("Error try again!")</script>';
             }
         }
     }

@@ -46,7 +46,7 @@
                         if($_SESSION['role'] == 3){
                             header('Location: ../view/catalogue.php');
                         }else if($_SESSION['role'] == 2){
-                            header('Location: ../view/catalogue.php');
+                            header('Location: ../view/teacher/dashboard.php');
                         }else if($_SESSION['role'] == 1){
                             header('Location: ../view/admin/dashboard.php');
                         }else{
@@ -118,14 +118,13 @@
                 $_SESSION['role'] = $this->type;
                 if ($r === 'teacher') {
                     $_SESSION['success'] = 'Your account has been created, wait for verification!';
-                    header('Location: ../view/login/login.php');
+                    header('Location: ../view/teacher/dashboard.php');
                 } else if ($r === 'student') {
                     header('Location: ../view/catalogue.php');
                 } else {
                     header('Location: ../view/login/login.php');
                 }
             } else {
-                $errorInfo = $addUser->errorInfo();
                 $_SESSION['Error'] = 'Failed to sign up, try again later!';
                 header('Location: ../view/login/login.php');
             }            

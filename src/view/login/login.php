@@ -5,7 +5,7 @@ session_start();
 if(isset($_SESSION['id']) && isset($_SESSION['role'])){
     if($_SESSION['role'] == 1){
     }elseif($_SESSION['role'] == 2){
-        header('Location: ../catalogue.php');
+        header('Location: ../teacher/dashboard.php');
     }elseif($_SESSION['role'] == 3){
         header('Location: ../catalogue.php');
     }else{

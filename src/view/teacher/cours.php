@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Courses</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script defer>
         const existingTags = ['JavaScript', 'HTML', 'CSS', 'React', 'Node.js']; // Example tags
 
@@ -59,27 +60,21 @@
     <!-- Page Wrapper -->
     <div class="flex h-screen">
         <!-- Sidebar -->
-        <aside class="w-64 bg-indigo-600 text-white flex flex-col">
-            <div class="p-6 text-center">
-                <h1 class="text-2xl font-bold">Youdemy</h1>
-            </div>
-            <nav class="flex-grow">
-                <a href="#" class="block py-3 px-6 text-lg hover:bg-indigo-500">Dashboard</a>
-                <a href="#" class="block py-3 px-6 text-lg hover:bg-indigo-500">Students</a>
-                <a href="#" class="block py-3 px-6 text-lg hover:bg-indigo-500">My Courses</a>
-            </nav>
-            <div class="p-6">
-                <button class="w-full bg-red-500 py-2 px-4 rounded-md hover:bg-red-600">Log Out</button>
-            </div>
-        </aside>
+        <?php include_once 'aside.php'; ?>
 
         <!-- Main Content -->
         <div class="flex-grow">
             <!-- Header -->
-            <header class="bg-white shadow p-4 flex justify-between items-center">
-                <div class="flex items-center space-x-4">
-                    <a href="index.html" class="text-gray-800 text-lg font-bold">Home</a>
-                    <a href="catalogue.html" class="text-gray-800 text-lg font-bold">Catalogue</a>
+            <header class="bg-white shadow-md px-8 py-4 flex justify-between items-center">
+                <div class="flex items-center space-x-6">
+                    <a href="../../../index.php" class="text-gray-700 text-lg font-medium hover:text-indigo-600 transition-colors flex items-center gap-2">
+                        <i class="fas fa-home"></i>
+                        Home
+                    </a>
+                    <a href="../catalogue.php" class="text-gray-700 text-lg font-medium hover:text-indigo-600 transition-colors flex items-center gap-2">
+                        <i class="fas fa-th-large"></i>
+                        Catalogue
+                    </a>
                 </div>
                 <h2 class="text-xl font-bold text-indigo-600">My Courses</h2>
             </header>
