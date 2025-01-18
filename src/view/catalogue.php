@@ -1,9 +1,34 @@
 <?php
 
 
-
+session_start();
 require_once '../classes/database.php';
 
+
+$getButtons = '';
+$getSelect = '';
+
+if(isset($_SESSION['id']) && isset($_SESSION['role']) && !empty($_SESSION['id']) && !empty($_SESSION['role'])){
+    if($_SESSION['role'] == 1){
+        $getButtons = '<a href="admin/dashboard.php" class="px-4 py-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-600/20">Dashboard</a>';
+    }elseif($_SESSION['role'] == 2){
+        $getButtons = '<a href="teacher/dashboard.php" class="px-4 py-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-600/20">Dashboard</a>';
+    }else{
+        $getButtons = '<form method="post" class="flex items-center space-x-4">
+                    <button name="logout" class="px-4 py-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-600/20">Logout</button>
+                </form>';
+        $getSelect = '<a href="student/mescours.php" class="text-gray-600 hover:text-indigo-600 transition-colors">My Courses</a>';
+    }
+}else{
+    $getButtons = '<a href="login/login.php" class="px-4 py-2 text-gray-600 hover:text-indigo-600 transition-colors">Log In</a>
+<a href="login/login.php" class="px-4 py-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-600/20">Sign Up Free</a>';
+}
+
+if(isset($_POST['logout'])){
+    session_destroy();
+    header('Location: ../../index.php');
+    die();
+}
 
 ?>
 
@@ -34,13 +59,24 @@ require_once '../classes/database.php';
                 
                 <nav class="hidden md:flex items-center space-x-8">
                     <a href="../../index.php" class="text-gray-600 hover:text-indigo-600 transition-colors">Home</a>
+                    <?php
+                        if($getSelect){
+                            echo $getSelect;
+                        }
+                     ?>
                     <a href="../../index.php#about" class="text-gray-600 hover:text-indigo-600 transition-colors">About</a>
                     <a href="../../index.php#contact" class="text-gray-600 hover:text-indigo-600 transition-colors">Contact</a>
                 </nav>
 
                 <div class="flex items-center space-x-4">
-                    <button class="px-4 py-2 text-gray-600 hover:text-indigo-600 transition-colors">Log In</button>
-                    <button class="px-4 py-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-600/20">Sign Up Free</button>
+                <?php
+
+                    if($getButtons){
+                        echo $getButtons;
+                    }
+
+
+                ?>
                 </div>
             </div>
         </div>
@@ -74,9 +110,11 @@ require_once '../classes/database.php';
 
             
             <!-- Search Bar -->
-            <form method="post" class="flex items-center space-x-4">
-                <input name="searchValue" type="text" placeholder="Search courses..." class="px-4  py-2 w-64 ring-[1px] rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-600">
-                <button name="search" class="bg-indigo-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none transition duration-200">Search</button>
+            <form method="get" class="flex items-center space-x-4">
+                <input <?php if(isset($_GET['search']) && !empty($_GET['searchValue'])){
+                    echo 'value="'.htmlspecialchars(trim($_GET['searchValue'])).'"';
+                } ?> name="searchValue" type="text" placeholder="Search courses..." class="px-4  py-2 w-64 ring-[1px] rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-600">
+                <button value="search" name="search" class="bg-indigo-600 text-white px-6 py-2 rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none transition duration-200">Search</button>
             </form>
         </div>
     </header>
@@ -105,8 +143,8 @@ require_once '../classes/database.php';
                 if(isset($_GET['catalogue']) && !empty($_GET['catalogue'])){
                     $getIdCategorie = htmlspecialchars(trim($_GET['catalogue']));
                 }
-                if(isset($_POST['search']) && !empty($_POST['searchValue'])){
-                    $getSearchValue = htmlspecialchars(trim($_POST['searchValue']));
+                if(isset($_GET['search']) && !empty($_GET['searchValue'])){
+                    $getSearchValue = htmlspecialchars(trim($_GET['searchValue']));
                 }
                 $getCours = cours::getCours(Database::getInstance()->getConnect(),$getOffSet,$getIdCategorie,$getSearchValue);
                 if($getCours != null && $getCours['data']->rowCount() > 0){

@@ -3,7 +3,7 @@
 
 
 
-    require_once '../classes/database.php';
+    require_once 'database.php';
 
 
 

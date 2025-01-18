@@ -9,8 +9,6 @@
 <?php 
 
 
-    require_once '../classes/database.php';
-
 
     class cours{
 
@@ -64,6 +62,19 @@
             $getCour->bindParam(":getID",$this->id_cours);
             if($getCour->execute() && $getCour->rowCount() === 1){
                 return $getCour->fetch(PDO::FETCH_ASSOC);
+            }else{
+                return null;
+            }
+        }
+        public function mycours($getID,$conn){
+            $this->id_cours = $getID;
+            $getMyCours = $conn->prepare("SELECT * FROM mycours INNER JOIN cours ON mycours.id_cours = cours.id_cours 
+             INNER JOIN categorie ON cours.id_categorie = categorie.id_categorie 
+             INNER JOIN users ON users.id_user = cours.id_user
+            WHERE mycours.id_user = :getID");
+            $getMyCours->bindParam(":getID",$this->id_cours);
+            if($getMyCours->execute()){
+                return $getMyCours;
             }else{
                 return null;
             }

@@ -1,6 +1,7 @@
 
 <?php
 
+    session_start();
     require_once '../classes/database.php';
     require_once '../classes/cours.php';
     $cour = '';
@@ -46,8 +47,7 @@
                 Back to Catalogue
             </a>
             <nav class="space-x-4">
-                <button class="bg-white/20 hover:bg-white/30 text-white px-5 py-2 rounded-full transition-all">Log In</button>
-                <button class="bg-yellow-400 hover:bg-yellow-500 text-gray-900 px-5 py-2 rounded-full transition-all">Sign Up</button>
+                
             </nav>
         </div>
     </header>

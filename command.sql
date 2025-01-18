@@ -59,3 +59,7 @@ CREATE TABLE tags_cours(id_tag int NOT null,
 id_cours int NOT null,
  FOREIGN KEY (id_tag) REFERENCES tags(id_tag) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (id_cours) REFERENCES cours(id_cours) ON DELETE CASCADE ON UPDATE CASCADE)
+
+
+CREATE TABLE mycours(id_cours int NOT null, id_user int NOT null, FOREIGN KEY (id_cours) REFERENCES cours(id_cours) ON DELETE CASCADE ON UPDATE CASCADE,
+ FOREIGN KEY (id_user) REFERENCES users(id_user) ON DELETE CASCADE ON UPDATE CASCADE);

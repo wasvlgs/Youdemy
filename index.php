@@ -1,3 +1,17 @@
+
+<?php
+
+    session_start();
+
+
+
+
+?>
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,8 +38,23 @@
                 </nav>
 
                 <div class="flex items-center space-x-4">
-                    <button class="px-4 py-2 text-gray-600 hover:text-indigo-600 transition-colors">Log In</button>
-                    <button class="px-4 py-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-600/20">Sign Up Free</button>
+                    <?php
+
+                        if(isset($_SESSION['id']) && isset($_SESSION['role']) && !empty($_SESSION['id']) && !empty($_SESSION['role'])){
+                            if($_SESSION['role'] == 1){
+                                echo '<a href="src/view/admin/dashboard.php" class="px-4 py-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-600/20">Dashboard</a>';
+                            }elseif($_SESSION['role'] == 1){
+                                echo '<a href="src/view/teacher/dashboard.php" class="px-4 py-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-600/20">Dashboard</a>';
+                            }else{
+                                echo '<a href="src/view/catalogue.php" class="px-4 py-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-600/20">Catalogue</a>';
+                            }
+                        }else{
+                            echo '<a href="src/view/login/login.php" class="px-4 py-2 text-gray-600 hover:text-indigo-600 transition-colors">Log In</a>
+                    <a href="src/view/login/login.php" class="px-4 py-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-600/20">Sign Up Free</a>';
+                        }
+
+
+                    ?>
                 </div>
             </div>
         </div>
@@ -41,13 +70,13 @@
                 <p class="text-xl text-gray-600 leading-relaxed">Join millions of learners worldwide and master the skills you need to shape your tomorrow.</p>
                 
                 <div class="max-w-2xl mx-auto">
-                    <div class="relative">
-                        <input type="text" placeholder="What do you want to learn?" 
+                    <form method="GET" action="src/view/catalogue.php" class="relative">
+                        <input name="searchValue" type="text" placeholder="What do you want to learn?" 
                                class="w-full px-6 py-4 bg-white rounded-full shadow-lg border border-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-600/20" />
-                        <button class="absolute right-2 top-1/2 -translate-y-1/2 bg-indigo-600 text-white px-6 py-2 rounded-full hover:bg-indigo-700 transition-colors">
+                        <button name="search" class="absolute right-2 top-1/2 -translate-y-1/2 bg-indigo-600 text-white px-6 py-2 rounded-full hover:bg-indigo-700 transition-colors">
                             Search
                         </button>
-                    </div>
+                    </form>
                 </div>
 
                 <div class="flex items-center justify-center gap-12 pt-8">

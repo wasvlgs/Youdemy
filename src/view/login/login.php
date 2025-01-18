@@ -15,8 +15,6 @@ if(isset($_SESSION['id']) && isset($_SESSION['role'])){
 
 ?>
 
-
-<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
