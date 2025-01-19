@@ -213,7 +213,7 @@
             $this->desc = $desc;
             $this->id_cours = $getID;
 
-            $editCours = $conn->prepare("UPDATE cours SET titre = :titre, description = :desc WHERE id_cours = :getID");
+            $editCours = $conn->prepare("UPDATE cours SET titre = :titre, description = :desc, id_approved = '0' WHERE id_cours = :getID");
             $editCours->bindParam(":titre",$this->titre);
             $editCours->bindParam(":desc",$this->desc);
             $editCours->bindParam(":getID",$this->id_cours);

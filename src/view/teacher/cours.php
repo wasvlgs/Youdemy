@@ -215,8 +215,7 @@
     <div id="editCourseModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden">
         <div class="bg-white p-8 rounded-lg shadow-lg w-1/2">
             <h2 class="text-xl font-bold text-gray-800 mb-4">Edit Course</h2>
-            <form action="" method="POST">
-                <input type="hidden" id="edit-course-id" name="course_id">
+            <form action="../../controller/editCoursController.php" method="POST">
                 <div class="mb-4">
                     <label for="edit-course-title" class="block text-gray-700 font-bold mb-2">Course Title</label>
                     <input type="text" id="edit-course-title" name="edit_title" class="w-full border border-gray-300 rounded-md p-2" required>
@@ -232,7 +231,7 @@
                         class="bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600 mr-2">
                         Cancel
                     </button>
-                    <button type="submit" name="edit_course" class="bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700">
+                    <button id="edit-course-id" type="submit" name="edit_course" class="bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700">
                         Save Changes
                     </button>
                 </div>
