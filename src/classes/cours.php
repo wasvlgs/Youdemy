@@ -239,6 +239,45 @@
                 return false;
             }
         }
+
+        public function afficherCours($getID,$typeContent,$conn){
+            $this->id_cours = $getID;
+            $getContent = $conn->prepare("SELECT content FROM cours WHERE id_cours = :getID");
+            $getContent->bindParam(":getID",$getID);
+            if($getContent->execute()){
+                $content = $getContent->fetch(PDO::FETCH_ASSOC);
+                if($typeContent === "text"){
+                    echo '<section class="bg-white rounded-2xl shadow-xl p-8">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6">Text Content</h2>
+                        <div class="prose max-w-none">
+                            <p class="text-gray-600 leading-relaxed mb-6">
+                                '.$content.'
+                            </p>
+                            
+                        </div>
+                    </section>';
+                }elseif($typeContent === "video"){
+                    echo '<section class="bg-white rounded-2xl shadow-xl p-8 mb-8 overflow-hidden">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6">Video Content</h2>
+                        <div class="aspect-video bg-gray-900 rounded-xl overflow-hidden relative group">
+                            <video controls class="w-full h-full object-cover">
+                                <source src="../../public/videos/'.$content.'" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                            <div class="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/30 transition-all cursor-pointer">
+                                <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center transform group-hover:scale-110 transition-all">
+                                    <i class="fas fa-play text-indigo-600 text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </section>';
+                }else{
+                    return null;
+                }
+            }else{
+                return null;
+            }
+        }
     }
 
 

@@ -4,6 +4,7 @@
     session_start();
     require_once '../classes/database.php';
     require_once '../classes/cours.php';
+    require_once '../classes/cours.php';
     $cour = '';
     $instance = new cours();
 
@@ -135,26 +136,56 @@
                 <?php echo $getButton; ?>
             </div>
         </section>
+            <?php
+                if(isset($cour) && !empty($cour)){
+                    if($cour['typeContent'] === "text"){
 
-        <!-- Course Content: Video Section -->
-        <section class="bg-white rounded-2xl shadow-xl p-8 mb-8 overflow-hidden">
+                        echo '<section class="bg-white rounded-2xl shadow-xl p-8">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6">Text Content</h2>
+                        <div class="prose max-w-none">
+                            <p class="text-gray-600 leading-relaxed mb-6">
+                                '.$cour['content'].'
+                            </p>
+                            
+                        </div>
+                    </section>';
+
+                    }elseif($cour['typeContent'] === "video"){
+                        echo '<section class="bg-white rounded-2xl shadow-xl p-8 mb-8 overflow-hidden">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6">Video Content</h2>
+                        <div class="aspect-video bg-gray-900 rounded-xl overflow-hidden relative group">
+                            <video controls class="w-full h-full object-cover">
+                                <source src="../../public/videos/'.$cour['content'].'" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                            <div class="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/30 transition-all cursor-pointer">
+                                <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center transform group-hover:scale-110 transition-all">
+                                    <i class="fas fa-play text-indigo-600 text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </section>';
+                    }
+                }
+            ?>
+
+        <!-- <section class="bg-white rounded-2xl shadow-xl p-8 mb-8 overflow-hidden">
             <h2 class="text-2xl font-bold text-gray-800 mb-6">Video Content</h2>
             <div class="aspect-video bg-gray-900 rounded-xl overflow-hidden relative group">
                 <video controls class="w-full h-full object-cover">
                     <source src="/videos/sample-course.mp4" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>
-                <!-- Play button overlay -->
                 <div class="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/30 transition-all cursor-pointer">
                     <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center transform group-hover:scale-110 transition-all">
                         <i class="fas fa-play text-indigo-600 text-xl"></i>
                     </div>
                 </div>
             </div>
-        </section>
+        </section> -->
 
-        <!-- Course Content: Text Section -->
-        <section class="bg-white rounded-2xl shadow-xl p-8">
+
+        <!-- <section class="bg-white rounded-2xl shadow-xl p-8">
             <h2 class="text-2xl font-bold text-gray-800 mb-6">Text Content</h2>
             <div class="prose max-w-none">
                 <p class="text-gray-600 leading-relaxed mb-6">
@@ -164,7 +195,7 @@
                     By the end of this course, you should be able to write simple programs and understand how programming can solve real-world problems. Dive in and start learning today!
                 </p>
             </div>
-        </section>
+        </section> -->
     </main>
 
     <!-- Footer -->

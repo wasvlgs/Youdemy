@@ -1,3 +1,31 @@
+<?php
+
+
+    session_start();
+
+
+    if(isset($_SESSION['id']) && isset($_SESSION['role']) && $_SESSION['role'] == 1){
+
+        if(isset($_POST['logout'])){
+            session_destroy();
+            header('Location: ../../../index.php');
+            die();
+        }
+    }else{
+        session_destroy();
+        header('Location: ../login/login.php');
+        die();
+    }
+
+?>
+
+
+
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,47 +38,16 @@
 <body class="bg-gray-50 font-sans">
     <div class="flex min-h-screen">
         <!-- Enhanced Sidebar -->
-        <aside class="w-64 bg-gradient-to-b from-indigo-600 to-indigo-800 text-white flex flex-col">
-            <div class="p-6 border-b border-indigo-500/30">
-                <div class="flex items-center space-x-3">
-                    <img src="/api/placeholder/32/32" alt="Logo" class="rounded-lg">
-                    <h1 class="text-2xl font-bold">Youdemy Admin</h1>
-                </div>
-            </div>
-            <nav class="flex-grow space-y-1 p-4">
-                <a href="#" class="flex items-center space-x-3 bg-indigo-500/30 py-3 px-4 rounded-lg">
-                    <i class="fas fa-chart-line w-5"></i>
-                    <span>Statistiques</span>
-                </a>
-                <a href="#" class="flex items-center space-x-3 py-3 px-4 rounded-lg hover:bg-indigo-500/30">
-                    <i class="fas fa-check-circle w-5"></i>
-                    <span>Accepter les cours</span>
-                </a>
-                <a href="#" class="flex items-center space-x-3 py-3 px-4 rounded-lg hover:bg-indigo-500/30">
-                    <i class="fas fa-users w-5"></i>
-                    <span>Gérer les utilisateurs</span>
-                </a>
-                <a href="#" class="flex items-center space-x-3 py-3 px-4 rounded-lg hover:bg-indigo-500/30">
-                    <i class="fas fa-tags w-5"></i>
-                    <span>Manage Tags</span>
-                </a>
-            </nav>
-            <div class="p-4">
-                <button class="w-full bg-red-500 hover:bg-red-600 py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span>Log Out</span>
-                </button>
-            </div>
-        </aside>
+        <?php include_once 'aside.php'; ?>
 
         <!-- Main Content Area -->
-        <div class="flex-1 flex flex-col">
+        <div class="flex-1 flex flex-col h-[100vh] overflow-y-auto">
             <!-- Enhanced Header -->
             <header class="bg-white shadow-sm border-b border-gray-200">
                 <div class="flex justify-between items-center px-6 py-4">
                     <div class="flex items-center space-x-4">
-                        <a href="index.html" class="text-gray-600 hover:text-gray-900">Home</a>
-                        <a href="catalogue.html" class="text-gray-600 hover:text-gray-900">Catalogue</a>
+                        <a href="../../../index.php" class="text-gray-600 hover:text-gray-900">Home</a>
+                        <a href="../catalogue.php" class="text-gray-600 hover:text-gray-900">Catalogue</a>
                     </div>
                     <h2 class="text-xl font-bold text-indigo-600">Admin Dashboard</h2>
                 </div>

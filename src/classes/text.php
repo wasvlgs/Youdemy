@@ -19,6 +19,7 @@
         public function addTextCour(){
             return parent::addCours(null,$this->titre,$this->desc,$this->content,$this->img,$this->id_user,$this->id_category,'text',Database::getInstance()->getConnect());
         }
+        
     }
 
 
