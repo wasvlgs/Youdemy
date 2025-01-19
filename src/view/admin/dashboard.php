@@ -1,10 +1,14 @@
 <?php
 
 
-    session_start();
+    require_once '../../classes/categorie.php';
+    require_once '../../classes/cours.php';
+    require_once '../../classes/teacher.php';
+    $instanceCours = new cours();
 
 
     if(isset($_SESSION['id']) && isset($_SESSION['role']) && $_SESSION['role'] == 1){
+
 
         if(isset($_POST['logout'])){
             session_destroy();
@@ -17,13 +21,10 @@
         die();
     }
 
+
+
+
 ?>
-
-
-
-
-
-
 
 
 <!DOCTYPE html>
@@ -64,10 +65,20 @@
                                 <div class="p-3 bg-indigo-100 rounded-lg">
                                     <i class="fas fa-book text-indigo-600"></i>
                                 </div>
-                                <span class="text-green-500 text-sm font-medium">+12%</span>
                             </div>
                             <h2 class="text-sm font-medium text-gray-600 mb-2">Total Courses</h2>
-                            <p class="text-3xl font-bold text-gray-800">50</p>
+                            <p class="text-3xl font-bold text-gray-800">
+                                <?php
+
+                                    $getTotalCours = $instanceCours->getAllCoursCount(Database::getInstance()->getConnect());
+                                    if($getTotalCours != null){
+                                        echo $getTotalCours['total'];
+                                    }else{
+                                        echo 0;
+                                    }
+
+                                ?>
+                            </p>
                         </div>
 
                         <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition-shadow">
@@ -75,10 +86,20 @@
                                 <div class="p-3 bg-blue-100 rounded-lg">
                                     <i class="fas fa-folder text-blue-600"></i>
                                 </div>
-                                <span class="text-green-500 text-sm font-medium">+5%</span>
                             </div>
                             <h2 class="text-sm font-medium text-gray-600 mb-2">Categories</h2>
-                            <p class="text-3xl font-bold text-gray-800">10</p>
+                            <p class="text-3xl font-bold text-gray-800">
+                                <?php 
+
+                                    $getTotalCategorie = categorie::getCategories();
+                                    if($getTotalCategorie != null){
+                                        echo $getTotalCategorie->rowCount();
+                                    }else{
+                                        echo 0;
+                                    }
+
+                                ?>
+                            </p>
                         </div>
 
                         <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition-shadow">
@@ -88,7 +109,16 @@
                                 </div>
                             </div>
                             <h2 class="text-sm font-medium text-gray-600 mb-2">Most Popular Course</h2>
-                            <p class="text-lg font-medium text-gray-800">JavaScript Basics</p>
+                            <p class="text-lg font-medium text-gray-800">
+                                <?php
+                                    $getBestCours = cours::bestCours(Database::getInstance()->getConnect());
+                                    if($getBestCours != null){
+                                        echo $getBestCours['titre'];
+                                    }else{
+                                        echo 'No best course exict!';
+                                    }
+                                 ?>
+                            </p>
                         </div>
 
                         <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition-shadow">
@@ -98,7 +128,18 @@
                                 </div>
                             </div>
                             <h2 class="text-sm font-medium text-gray-600 mb-2">Top Teachers</h2>
-                            <p class="text-lg font-medium text-gray-800">John Doe, Jane Smith</p>
+                            <p class="text-lg font-medium text-gray-800">
+                                <?php 
+
+                                    $getBestTeacher = prof::getBestTeacher(Database::getInstance()->getConnect());
+                                    if($getBestTeacher != null){
+                                        echo $getBestTeacher['prenom'].' '.$getBestTeacher['nom'];
+                                    }else{
+                                        echo 'No teacher exict!';
+                                    }
+                                
+                                ?>
+                            </p>
                         </div>
                     </div>
                 </section>
@@ -184,7 +225,11 @@
     </div>
 
     <script>
-        const categories = ['Programming', 'Design', 'Marketing', 'Business'];
+        const categories = [
+            <?php
+                // $getCategories = 
+            ?>
+        ];
 
         function toggleModal(modalId) {
             document.getElementById(modalId).classList.toggle('hidden');

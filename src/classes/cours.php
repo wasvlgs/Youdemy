@@ -278,6 +278,24 @@
                 return null;
             }
         }
+
+        public static function getAllCoursCount($conn){
+            $getCount = $conn->prepare("SELECT count(id_cours) as total FROM cours");
+            if($getCount->execute()){
+                return $getCount->fetch(PDO::FETCH_ASSOC);
+            }else{
+                return null;
+            }
+        }
+
+        public static function bestCours($conn){
+            $getCours = $conn->prepare("SELECT cours.id_cours,titre,COUNT(cours.id_cours) AS total FROM cours INNER JOIN mycours ON mycours.id_cours = cours.id_cours GROUP BY cours.id_cours ORDER BY total DESC LIMIT 1");
+            if($getCours->execute()){
+                return $getCours->fetch(PDO::FETCH_ASSOC);
+            }else{
+                return null;
+            }
+        }
     }
 
 

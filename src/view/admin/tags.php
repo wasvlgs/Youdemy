@@ -67,8 +67,8 @@
             <header class="bg-white shadow-sm border-b border-gray-200">
                 <div class="flex justify-between items-center px-6 py-4">
                     <div class="flex items-center space-x-4">
-                        <a href="index.html" class="text-gray-600 hover:text-gray-900">Home</a>
-                        <a href="catalogue.html" class="text-gray-600 hover:text-gray-900">Catalogue</a>
+                        <a href="../../../index.php" class="text-gray-600 hover:text-gray-900">Home</a>
+                        <a href="../catalogue.php" class="text-gray-600 hover:text-gray-900">Catalogue</a>
                     </div>
                     <h2 class="text-xl font-bold text-indigo-600">Gérer les tags</h2>
                 </div>
