@@ -92,17 +92,21 @@
                         <h2 class="text-lg font-bold text-gray-800">'.$cours['titre'].'</h2>
                         <p class="text-gray-600">'.$getDesc.'
                         <h3 class="text-lg bg-white py-3 rounded-full text-sm font-medium text-'.$color.'-600">'.$accpted.'</h3></p>
-                        <div class="flex justify-between">
+                        <form action="../../controller/removeCoursController.php" method="POST" class="flex justify-between">
                             <button 
+                                type="button"
                                 onclick="openEditModal('.$cours['id_cours'].',`'.$cours['titre'].'`, `'.$cours['description'].'`)" 
                                 class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">
                                 Edit
                             </button>
                             <button 
+                                value="'.$cours['id_cours'].'"
+                                name="remove"
+                                type="submit"
                                 class="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600">
                                 Remove
                             </button>
-                        </div>
+                        </form>
                     </div>';
                             }
                         }else{

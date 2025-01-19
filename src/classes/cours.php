@@ -208,16 +208,32 @@
             }
         }
 
-        public function editCour($titre,$desc,$getID,$conn){
+        public function editCour($titre,$desc,$getID,$teacher,$conn){
             $this->titre = $titre;
             $this->desc = $desc;
             $this->id_cours = $getID;
+            $this->id_user = $teacher;
 
-            $editCours = $conn->prepare("UPDATE cours SET titre = :titre, description = :desc, id_approved = '0' WHERE id_cours = :getID");
+            $editCours = $conn->prepare("UPDATE cours SET titre = :titre, description = :desc, id_approved = '0' WHERE id_cours = :getID AND id_user = :user");
             $editCours->bindParam(":titre",$this->titre);
             $editCours->bindParam(":desc",$this->desc);
             $editCours->bindParam(":getID",$this->id_cours);
+            $editCours->bindParam(":user",$this->id_user);
             if($editCours->execute()){
+                return true;
+            }else{
+                return false;
+            }
+        }
+
+        public function removeCour($cour,$user,$conn){
+
+            $this->id_cours = $cour;
+            $this->id_user = $user;
+            $removeCours = $conn->prepare("DELETE FROM cours WHERE id_cours = :cours AND id_user = :user");
+            $removeCours->bindParam(":cours",$this->id_cours);
+            $removeCours->bindParam(":user",$this->id_user);
+            if($removeCours->execute()){
                 return true;
             }else{
                 return false;
