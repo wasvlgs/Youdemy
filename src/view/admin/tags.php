@@ -109,9 +109,8 @@
                                                 <button onclick="openModule('.$tag['id_tag'].',`'.$tag['name'].'`)" data-modal="editTagModal" data-tag-id="1" class="bg-yellow-500 text-white py-2 px-4 rounded-lg hover:bg-yellow-600">
                                                     <i class="fas fa-edit"></i> Modifier
                                                 </button>
-                                                <form action="delete_tag.php" method="POST" class="inline">
-                                                    <input type="hidden" name="tag_id" value="1">
-                                                    <button type="submit" class="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600">
+                                                <form action="../../controller/removeTagController.php" method="POST" class="inline">
+                                                    <button value="'.$tag['id_tag'].'" name="removeTag" type="submit" class="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600">
                                                         <i class="fas fa-trash"></i> Supprimer
                                                     </button>
                                                 </form>

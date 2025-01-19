@@ -66,4 +66,15 @@
                 return null;
             }
         }
+
+        public function deleteTag($getID,$conn){
+            $this->id_tag = $getID;
+            $remove = $conn->prepare("DELETE FROM tags WHERE id_tag = :getID");
+            $remove->bindParam(":getID",$this->id_tag);
+            if($remove->execute()){
+                return true;
+            }else{
+                return false;
+            }
+        }
     }
