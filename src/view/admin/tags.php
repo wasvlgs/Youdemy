@@ -106,7 +106,7 @@
                                             echo '<tr>
                                             <td class="py-3 px-6">'.$tag['name'].'</td>
                                             <td class="py-3 px-6">
-                                                <button data-modal="editTagModal" data-tag-id="1" class="bg-yellow-500 text-white py-2 px-4 rounded-lg hover:bg-yellow-600">
+                                                <button onclick="openModule('.$tag['id_tag'].',`'.$tag['name'].'`)" data-modal="editTagModal" data-tag-id="1" class="bg-yellow-500 text-white py-2 px-4 rounded-lg hover:bg-yellow-600">
                                                     <i class="fas fa-edit"></i> Modifier
                                                 </button>
                                                 <form action="delete_tag.php" method="POST" class="inline">
@@ -123,20 +123,6 @@
                                     }
 
                                 ?>
-                                <!-- <tr>
-                                    <td class="py-3 px-6">Tag Example 1</td>
-                                    <td class="py-3 px-6">
-                                        <button data-modal="editTagModal" data-tag-id="1" class="bg-yellow-500 text-white py-2 px-4 rounded-lg hover:bg-yellow-600">
-                                            <i class="fas fa-edit"></i> Modifier
-                                        </button>
-                                        <form action="delete_tag.php" method="POST" class="inline">
-                                            <input type="hidden" name="tag_id" value="1">
-                                            <button type="submit" class="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600">
-                                                <i class="fas fa-trash"></i> Supprimer
-                                            </button>
-                                        </form>
-                                    </td>
-                                </tr> -->
 
                             </tbody>
                         </table>
@@ -168,9 +154,9 @@
         <!-- Modal content for editing a tag -->
         <div class="modal" id="editTagModal">
             <h2 class="text-2xl font-bold mb-4">Modifier le tag</h2>
-            <form action="edit_tag.php" method="POST">
+            <form action="../../controller/editTagController.php" method="POST">
                 <label for="editTagName" class="block text-gray-700">Nom du tag</label>
-                <input id="editTagName" name="tag_name" type="text" class="w-full px-4 py-2 border rounded-lg mb-4" placeholder="Nom du tag" required>
+                <input id="editTagName" name="editTagName" type="text" class="w-full px-4 py-2 border rounded-lg mb-4" placeholder="Nom du tag" required>
                 
                 <div class="flex space-x-4">
                     <button id="editTagId" name="edit" type="submit" class="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600">Modifier</button>
@@ -240,18 +226,12 @@
         });
 
         // Open modal for editing tag
-        document.querySelectorAll('[data-modal="editTagModal"]').forEach(button => {
-            button.addEventListener('click', (e) => {
-                const tagId = e.target.getAttribute('data-tag-id');
-                const tagName = e.target.closest('tr').querySelector('td').innerText;
-
-                document.getElementById('editTagId').value = tagId;
-                document.getElementById('editTagName').value = tagName;
-
-                document.getElementById('editTagModal').style.display = 'block';
-                document.getElementById('editModalBackdrop').style.display = 'block';
-            });
-        });
+        function openModule(id,name){
+            document.getElementById('editTagModal').style.display = 'block';
+            document.getElementById('editModalBackdrop').style.display = 'block';
+            document.getElementById("editTagId").value = id;
+            document.getElementById("editTagName").value = name;
+        }
 
         // Close modal for adding tag
         function closeModal() {

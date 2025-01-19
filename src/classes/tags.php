@@ -29,13 +29,25 @@
         }
 
         public function addTags($conn){
-            $addTags = $conn->prepare("INSERT INTO tags(name) VALUES(:tag)");
-            $addTags->bindParam(":tag",$this->name);
-            if ($addTags->execute()) {
-                return $conn->lastInsertId();
-            } else {
-                return false;
+            if($this->id_tag === null){
+                $addTags = $conn->prepare("INSERT INTO tags(name) VALUES(:tag)");
+                $addTags->bindParam(":tag",$this->name);
+                if ($addTags->execute()) {
+                    return $conn->lastInsertId();
+                } else {
+                    return false;
+                }
+            }else{
+                $editTag = $conn->prepare("UPDATE tags SET name = :name WHERE id_tag = :getID");
+                $editTag->bindParam(":name",$this->name);
+                $editTag->bindParam(":getID",$this->id_tag);
+                if ($editTag->execute()) {
+                    return true;
+                } else {
+                    return false;
+                }
             }
+            
         }
 
         public function addAssocTags($tag,$cours,$conn){
