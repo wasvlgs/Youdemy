@@ -2,7 +2,7 @@
 <?php
 
 
-
+    require_once '../classes/database.php';
     require_once '../classes/student.php';
     require_once '../classes/teacher.php';
 
@@ -23,11 +23,11 @@
             if($getType === "etudiant"){
                 $role = 'active';
                 $instance = new etudiant($role,null,$getLName,$getFName,$getEmail,$getPass,3);
-                $instance->signup('student');
+                $instance->signup('student',Database::getInstance()->getConnect());
             }else if($getType === "prof"){
                 $role = 'pending';
                 $instance = new prof($role,null,$getLName,$getFName,$getEmail,$getPass,2);
-                $instance->signup('teacher');
+                $instance->signup('teacher',Database::getInstance()->getConnect());
             }else{
                 session_start();
                 $_SESSION['Error'] = "Invalid information";

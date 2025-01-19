@@ -1,4 +1,4 @@
-<aside class="w-64 bg-gradient-to-b from-indigo-600 to-indigo-800 text-white flex flex-col">
+<aside class="min-w-64 bg-gradient-to-b from-indigo-600 to-indigo-800 text-white flex flex-col">
             <div class="p-8 text-center border-b border-indigo-500/30">
                 <h1 class="text-2xl font-bold tracking-wider">Youdemy</h1>
             </div>

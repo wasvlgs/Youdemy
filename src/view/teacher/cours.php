@@ -1,5 +1,6 @@
 <?php
     session_start();
+    require_once '../../classes/database.php';
     require_once '../../classes/categorie.php';
     require_once '../../classes/cours.php';
 
@@ -23,7 +24,7 @@
         die();
     }
 
-    $getCategories = categorie::getCategories();
+    $getCategories = categorie::getCategories(Database::getInstance()->getConnect());
     $getCours = $instanceCours->teacherCours($getID,Database::getInstance()->getConnect());
 
 ?>

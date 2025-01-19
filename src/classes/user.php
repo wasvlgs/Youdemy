@@ -1,7 +1,6 @@
 <?php
 
-
-
+    session_start();
 
     abstract class user{
 
@@ -26,10 +25,9 @@
 
 
 
-        public static function login($e,$p){
+        public static function login($e,$p,$conn){
 
-            $db = Database::getInstance()->getConnect();
-            $checkEmail = $db->prepare("SELECT * FROM users INNER JOIN role ON users.role = role.id_role WHERE email = :email");
+            $checkEmail = $conn->prepare("SELECT * FROM users INNER JOIN role ON users.role = role.id_role WHERE email = :email");
             $checkEmail->bindParam(":email",$e);
             if($checkEmail->execute() && $checkEmail->rowCount() === 1){
                 $getUser = $checkEmail->fetch(PDO::FETCH_ASSOC);
@@ -91,15 +89,14 @@
 
 
 
-        public function signup($r){
+        public function signup($r,$conn){
 
             $getPass = password_hash($this->password, PASSWORD_DEFAULT);
-            $db = Database::getInstance()->getConnect();
 
-            $checkEmail = $db->prepare("SELECT * FROM users WHERE email = :getEmail");
+            $checkEmail = $conn->prepare("SELECT * FROM users WHERE email = :getEmail");
             $checkEmail->bindParam(":getEmail",$this->email,PDO::PARAM_STR);
             if($checkEmail->execute() && $checkEmail->rowCount() === 0){
-                $addUser = $db->prepare("INSERT INTO users(id_user,nom,prenom,email,password,role,statut)
+                $addUser = $conn->prepare("INSERT INTO users(id_user,nom,prenom,email,password,role,statut)
                 VALUES(:getID,:getLName, :getFName, :getEmail, :getPass, :getRole, :getStatus)");
                $addUser->bindParam(":getID",$this->id_user,PDO::PARAM_INT);
                $addUser->bindParam(":getLName",$this->nom,PDO::PARAM_STR);
@@ -109,7 +106,7 @@
                $addUser->bindParam(":getRole",$this->type,PDO::PARAM_INT);
                $addUser->bindParam(":getStatus",$this->status,PDO::PARAM_STR);
                if ($addUser->execute()) {
-                $_SESSION['id'] = $db->lastInsertId();
+                $_SESSION['id'] = $conn->lastInsertId();
                 $_SESSION['role'] = $this->type;
                 if ($r === 'teacher') {
                     $_SESSION['success'] = 'Your account has been created, wait for verification!';

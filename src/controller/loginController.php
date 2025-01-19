@@ -2,6 +2,7 @@
 
 
 
+    require_once '../classes/database.php';
     require_once '../classes/user.php';
 
 
@@ -14,7 +15,7 @@
         $getPass = htmlspecialchars(trim($_POST['getPass']));
 
         if(!empty($getEmail) && !empty($getPass)){
-            user::login($getEmail,$getPass);
+            user::login($getEmail,$getPass,Database::getInstance()->getConnect());
         }else{
             session_start();
             $_SESSION['logError'] = "Ivalid information";

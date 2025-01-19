@@ -1,9 +1,10 @@
 <?php
 
 
+    require_once '../../classes/database.php';
+    require_once '../../classes/teacher.php';
     require_once '../../classes/categorie.php';
     require_once '../../classes/cours.php';
-    require_once '../../classes/teacher.php';
     $instanceCours = new cours();
 
 
@@ -91,7 +92,7 @@
                             <p class="text-3xl font-bold text-gray-800">
                                 <?php 
 
-                                    $getTotalCategorie = categorie::getCategories();
+                                    $getTotalCategorie = categorie::getCategories(Database::getInstance()->getConnect());
                                     if($getTotalCategorie != null){
                                         echo $getTotalCategorie->rowCount();
                                     }else{
@@ -154,8 +155,31 @@
                             <span>Add Category</span>
                         </button>
                     </div>
-                    <div id="categories-list" class="space-y-3">
-                        <!-- Categories will be dynamically inserted here -->
+                    <div id="categories-list" class="space-y-3 max-h-[500px] overflow-y-auto">
+
+                            <?php
+
+                                    $getCategories = categorie::getCategories(Database::getInstance()->getConnect());
+                                    if($getCategories != null && $getCategories->rowCount() > 0){
+                                        foreach($getCategories as $categorie){
+                                            echo '<div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+                                            <span class="font-medium text-gray-700">'.$categorie['name'].'</span>
+                                            <form action="../../controller/removeCategorieController.php" method="post" class="flex items-center space-x-2">
+                                                <button type="button"  onclick="toggleModal(`editCategoryModal`,`'.$categorie['name'].'`,'.$categorie['id_categorie'].')"  class="text-blue-600 hover:text-blue-700 p-2">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button value="'.$categorie['id_categorie'].'" name="remove" class="text-red-600 hover:text-red-700 p-2">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+                                            </form>
+                                        </div>';
+                                        }
+                                    }else{
+                                        echo 'No categorie exict';
+                                    }
+
+                            ?>
+
                     </div>
                 </section>
             </main>
@@ -167,23 +191,23 @@
         <div class="bg-white rounded-xl shadow-lg w-full max-w-md mx-4">
             <div class="p-6">
                 <h2 class="text-xl font-bold text-gray-800 mb-4">Add Category</h2>
-                <form onsubmit="addCategory(event)">
+                <form method="post" action="../../controller/addCategorieController.php">
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700 mb-2" for="add-category-input">
                             Category Name
                         </label>
-                        <input type="text" 
+                        <input name="setCategorie" type="text" 
                                id="add-category-input" 
                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" 
                                placeholder="Enter category name">
                     </div>
                     <div class="flex justify-end space-x-3">
                         <button type="button" 
-                                onclick="toggleModal('addCategoryModal')" 
+                                onclick="toggleModal('addCategoryModal')"  
                                 class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
                             Cancel
                         </button>
-                        <button type="submit" 
+                        <button name="addCategorie" type="submit" 
                                 class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
                             Add Category
                         </button>
@@ -198,13 +222,12 @@
         <div class="bg-white rounded-xl shadow-lg w-full max-w-md mx-4">
             <div class="p-6">
                 <h2 class="text-xl font-bold text-gray-800 mb-4">Edit Category</h2>
-                <form onsubmit="saveCategory(event)">
-                    <input type="hidden" id="edit-category-index">
+                <form method="post" action="../../controller/editCategorieController.php">
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700 mb-2" for="edit-category-input">
                             Category Name
                         </label>
-                        <input type="text" 
+                        <input name="editName" type="text" 
                                id="edit-category-input" 
                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                     </div>
@@ -214,7 +237,7 @@
                                 class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
                             Cancel
                         </button>
-                        <button type="submit" 
+                        <button name="saveChange" id="saveChange" type="submit" 
                                 class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
                             Save Changes
                         </button>
@@ -224,84 +247,68 @@
         </div>
     </div>
 
+    <!-- Alert Container (Initially hidden) -->
+    <div id="alert-container" class="fixed top-0 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-lg p-4 mb-4 hidden rounded-lg">
+        <!-- Success Alert -->
+        <div id="success-alert" class="alert hidden p-4 mb-4 text-green-700 bg-green-100 rounded-lg shadow-md w-full">
+            <span id="success-message" class="font-medium">Success! Your action was completed.</span>
+        </div>
+
+        <!-- Error Alert -->
+        <div id="error-alert" class="alert hidden p-4 mb-4 text-red-700 bg-red-100 rounded-lg shadow-md w-full">
+            <span id="error-message" class="font-medium">Error! Something went wrong.</span>
+        </div>
+    </div>
     <script>
-        const categories = [
             <?php
-                // $getCategories = 
+
+            if(isset($_SESSION['alert'])){
+                echo $_SESSION['alert'];
+                unset($_SESSION['alert']);
+            }
             ?>
-        ];
+            // Function to display the alert (success or error)
+        function showAlert(type, message) {
+            const alertContainer = document.getElementById('alert-container');
+            const successAlert = document.getElementById('success-alert');
+            const errorAlert = document.getElementById('error-alert');
+            const successMessage = document.getElementById('success-message');
+            const errorMessage = document.getElementById('error-message');
 
-        function toggleModal(modalId) {
+            // Set the alert message
+            if (type === 'success') {
+                successMessage.textContent = message;
+                successAlert.classList.remove('hidden');
+                errorAlert.classList.add('hidden');
+            } else if (type === 'error') {
+                errorMessage.textContent = message;
+                errorAlert.classList.remove('hidden');
+                successAlert.classList.add('hidden');
+            }
+
+            // Show the alert container
+            alertContainer.classList.remove('hidden');
+
+            // Automatically close the alert after 3 seconds
+            setTimeout(closeAlert, 2000);
+        }
+
+        // Function to close the alert
+        function closeAlert() {
+            const alertContainer = document.getElementById('alert-container');
+            alertContainer.classList.add('hidden');
+        }
+        function toggleModal(modalId,name = '',id = '') {
             document.getElementById(modalId).classList.toggle('hidden');
-        }
-
-        function addCategory(event) {
-            event.preventDefault();
-            const input = document.getElementById('add-category-input');
-            const categoryName = input.value.trim();
-            if (categoryName && !categories.includes(categoryName)) {
-                categories.push(categoryName);
-                renderCategories();
-                toggleModal('addCategoryModal');
-                input.value = '';
+            if(name && id){
+                document.getElementById("edit-category-input").value = name;
+                document.getElementById("saveChange").value = id;
             }
+            
         }
 
-        function editCategory(index) {
-            const input = document.getElementById('edit-category-input');
-            input.value = categories[index];
-            document.getElementById('edit-category-index').value = index;
-            toggleModal('editCategoryModal');
-        }
 
-        function saveCategory(event) {
-            event.preventDefault();
-            const index = document.getElementById('edit-category-index').value;
-            const newCategory = document.getElementById('edit-category-input').value.trim();
-            if (newCategory && !categories.includes(newCategory)) {
-                categories[index] = newCategory;
-                renderCategories();
-                toggleModal('editCategoryModal');
-            }
-        }
 
-        function deleteCategory(index) {
-            categories.splice(index, 1);
-            renderCategories();
-        }
-
-        function renderCategories() {
-            const list = document.getElementById('categories-list');
-            list.innerHTML = '';
-            categories.forEach((category, index) => {
-                const listItem = document.createElement('div');
-                listItem.className = 'flex justify-between items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200';
-                
-                const categoryText = document.createElement('span');
-                categoryText.className = 'font-medium text-gray-700';
-                categoryText.textContent = category;
-
-                const actions = document.createElement('div');
-                actions.className = 'flex items-center space-x-2';
-
-                const editButton = document.createElement('button');
-                editButton.className = 'text-blue-600 hover:text-blue-700 p-2';
-                editButton.innerHTML = '<i class="fas fa-edit"></i>';
-                editButton.onclick = () => editCategory(index);
-
-                const deleteButton = document.createElement('button');
-                deleteButton.className = 'text-red-600 hover:text-red-700 p-2';
-                deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i>';
-                deleteButton.onclick = () => deleteCategory(index);
-
-                actions.appendChild(editButton);
-                actions.appendChild(deleteButton);
-
-                listItem.appendChild(categoryText);
-                listItem.appendChild(actions);
-                list.appendChild(listItem);
-            });
-        }
 
         document.addEventListener('DOMContentLoaded', renderCategories);
     </script>

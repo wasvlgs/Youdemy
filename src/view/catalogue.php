@@ -94,7 +94,7 @@ if(isset($_POST['logout'])){
                 <?php
 
                     require_once '../classes/categorie.php';
-                    $getCategories = categorie::getCategories();
+                    $getCategories = categorie::getCategories(Database::getInstance()->getConnect());
 
                     if($getCategories != null && $getCategories->rowCount() > 0){
                         foreach($getCategories as $categorie){
