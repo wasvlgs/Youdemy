@@ -1,33 +1,24 @@
 
-
-
-
-
-
-
-
-<?php 
-
-
+<?php
 
     class cours{
 
-        private $id_cours;
-        private $titre;
-        private $desc;
-        private $content;
-        private $id_category;
-        private $id_user;
+        protected $id_cours;
+        protected $titre;
+        protected $desc;
+        protected $id_category;
+        protected $id_user;
+        protected $img;
 
 
-        public function __construct($id_cour = null,$titre = null,$desc = null,$content = null, $id_user = null,$id_category = null)
+        public function __construct($id_cour = null,$titre = null,$desc = null, $img = null, $id_user = null,$id_category = null)
         {
             $this->id_cours = $id_cour;
             $this->titre = $titre;
             $this->desc = $desc;
-            $this->content = $content;
             $this->id_category = $id_category;
             $this->id_user = $id_user;
+            $this->img = $img;
         }
 
 
@@ -149,6 +140,87 @@
                 return $getActivities;
             }else{
                 return null;
+            }
+        }
+
+        public function getAllMyStudents($getID,$conn,$filter){
+            $this->id_user = $getID;
+            if($filter){
+                $getUsers = $conn->prepare("SELECT nom,prenom,email,titre FROM users INNER JOIN mycours ON users.id_user = mycours.id_user INNER JOIN cours ON cours.id_cours = mycours.id_cours WHERE cours.id_user = :getID AND cours.id_cours = :cour");
+                $getUsers->bindParam(":cour",$filter);
+            }else{
+                $getUsers = $conn->prepare("SELECT nom,prenom,email,titre FROM users INNER JOIN mycours ON users.id_user = mycours.id_user INNER JOIN cours ON cours.id_cours = mycours.id_cours WHERE cours.id_user = :getID");
+            }
+            
+            $getUsers->bindParam(":getID",$getID);
+            if($getUsers->execute()){
+                return $getUsers;
+            }else{
+                return null;
+            }
+        }
+
+        public function getMyTitleCourses($getID,$conn){
+            $this->id_user = $getID;
+            $getTitles = $conn->prepare("SELECT id_cours,titre FROM cours WHERE id_user = :getID");
+            $getTitles->bindParam(":getID",$getID);
+            if($getTitles->execute()){
+                return $getTitles;
+            }else{
+                return null;
+            }
+        }
+
+        public function addCours($id,$titre,$desc,$content,$img,$user,$categorie,$type,$conn){
+
+            $this->id_cours = $id;
+            $this->titre = $titre;
+            $this->desc = $desc;
+            $this->id_user = $user;
+            $this->id_category = $categorie;
+
+            $addCours = $conn->prepare("INSERT INTO cours(id_cours,titre,description,content,id_approved,id_user,id_categorie,imgSrc,date_create,typeContent) 
+            VALUES(:id,:titre,:desc,:content,0,:id_user,:id_categorie,:imgSrc,CURRENT_DATE,:type)");
+            $addCours->bindParam(":id",$this->id_cours);
+            $addCours->bindParam(":titre",$this->titre);
+            $addCours->bindParam(":desc",$this->desc);
+            $addCours->bindParam(":content",$content);
+            $addCours->bindParam(":id_user",$this->id_user);
+            $addCours->bindParam(":id_categorie",$this->id_category);
+            $addCours->bindParam(":imgSrc",$img);
+            $addCours->bindParam(":type",$type);
+            if($addCours->execute()){
+                return $conn->lastInsertId();
+            }else{
+                return false;
+            }
+            
+        }
+
+        public function teacherCours($getID,$conn){
+            $this->id_cours = $getID;
+            $getCours = $conn->prepare("SELECT * FROM cours WHERE id_user = :getID");
+            $getCours->bindParam(":getID",$getID);
+            if($getCours->execute()){
+                return $getCours;
+            }else{
+                return null;
+            }
+        }
+
+        public function editCour($titre,$desc,$getID,$conn){
+            $this->titre = $titre;
+            $this->desc = $desc;
+            $this->id_cours = $getID;
+
+            $editCours = $conn->prepare("UPDATE cours SET titre = :titre, description = :desc WHERE id_cours = :getID");
+            $editCours->bindParam(":titre",$this->titre);
+            $editCours->bindParam(":desc",$this->desc);
+            $editCours->bindParam(":getID",$this->id_cours);
+            if($editCours->execute()){
+                return true;
+            }else{
+                return false;
             }
         }
     }

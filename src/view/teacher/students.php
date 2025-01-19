@@ -1,3 +1,40 @@
+<?php
+
+
+    session_start();
+
+    require_once '../../classes/database.php';
+    require_once '../../classes/cours.php';
+
+    if(isset($_SESSION['id']) && isset($_SESSION['role']) && $_SESSION['role'] == 2){
+
+        $getFilter = '';
+        if(isset($_GET['filter']) && !empty($_GET['cours'])){
+            $getCourId = htmlspecialchars(trim($_GET['cours']));
+            if(!empty($getCourId)){
+                $getFilter = $getCourId;
+            }
+        }
+
+        $instanceCours = new cours();
+        $getUsers = $instanceCours->getAllMyStudents($_SESSION['id'],Database::getInstance()->getConnect(),$getFilter);
+        $getOptions = $instanceCours->getMyTitleCourses($_SESSION['id'],Database::getInstance()->getConnect());
+
+
+        if(isset($_POST['logout'])){
+            session_destroy();
+            header('Location: ../../../index.php');
+            die();
+        }
+    }else{
+        session_destroy();
+        header('Location: ../login/login.php');
+        die();
+    }
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -39,18 +76,37 @@
                     <h1 class="text-3xl font-bold text-gray-800 mb-8">Enrolled Students</h1>
 
                     <!-- Filter Section -->
-                    <section class="mb-8">
+                    <form method="get" class="mb-8">
                         <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
                             <i class="fas fa-filter text-indigo-600"></i>
                             Filter by Course
                         </h2>
-                        <select class="w-full md:w-1/2 px-4 py-3 border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                            <option value="">All Courses</option>
-                            <option value="course1">Introduction to Programming</option>
-                            <option value="course2">Advanced Web Development</option>
-                            <option value="course3">Data Science Basics</option>
-                        </select>
-                    </section>
+                        <div class="flex gap-3 items-start">
+                            <select name="cours" class="w-full md:w-1/2 px-4 py-3 border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                                <option value="">All Courses</option>
+                                <?php
+                                
+                                    if($getOptions != null && $getOptions->rowCount() > 0){
+                                        foreach($getOptions as $option){
+                                            echo '<option value="'.$option['id_cours'].'">'.$option['titre'].'</option>';
+                                        }
+                                    }
+                                ?>
+                                <!-- <option value="course1">Introduction to Programming</option>
+                                <option value="course2">Advanced Web Development</option>
+                                <option value="course3">Data Science Basics</option> -->
+                            </select>
+                            <button 
+                                name="filter" 
+                                value="filter"
+                                class="px-6 py-3 bg-indigo-600 text-white rounded-lg font-medium shadow-sm 
+                                    hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 
+                                    transition-colors duration-200 ease-in-out"
+                            >
+                                Filter
+                            </button>
+                        </div>
+                    </form>
 
                     <!-- Students Table -->
                     <section class="bg-white rounded-xl shadow-lg overflow-hidden">
@@ -79,7 +135,37 @@
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-200">
-                                    <tr class="hover:bg-gray-50 transition-colors">
+                                <?php
+
+                                    if($getUsers != null && $getUsers->rowCount() > 0){
+                                        $colors = ['blue','purple','green'];
+                                        $count = 0;
+                                        foreach($getUsers as $user){
+                                            echo '<tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                '.$user['prenom'].' '.$user['nom'].'
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4">'.$user['email'].'</td>
+                                        <td class="px-6 py-4">
+                                            <span class="bg-'.$colors[$count].'-100 text-'.$colors[$count].'-800 px-3 py-1 rounded-full text-sm font-medium">
+                                                '.$user['titre'].'
+                                            </span>
+                                        </td>
+                                    </tr>';
+                                            if($count < count($colors) -1){
+                                                $count++;
+                                            }else{
+                                                $count = 0;
+                                            }
+                                        }
+                                    }else{
+                                        echo 'No activity exict';
+                                    }
+
+                                    ?>
+                                    <!-- <tr class="hover:bg-gray-50 transition-colors">
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <div class="flex items-center">
                                                 <img src="/api/placeholder/32/32" class="rounded-full mr-3">
@@ -120,7 +206,7 @@
                                                 Data Science Basics
                                             </span>
                                         </td>
-                                    </tr>
+                                    </tr> -->
                                 </tbody>
                             </table>
                         </div>

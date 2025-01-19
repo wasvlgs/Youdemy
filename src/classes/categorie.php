@@ -5,10 +5,6 @@
 
     require_once 'database.php';
 
-
-
-
-
     class categorie{
 
         private $id_categorie;

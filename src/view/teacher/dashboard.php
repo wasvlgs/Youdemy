@@ -205,50 +205,6 @@
                                             }
                                         
                                         ?>
-
-
-                                        <!-- <tr class="hover:bg-gray-50 transition-colors">
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="flex items-center">
-                                                    <img src="/api/placeholder/32/32" class="rounded-full mr-3">
-                                                    Alice Johnson
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-4">
-                                                <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
-                                                    Introduction to Programming
-                                                </span>
-                                            </td>
-                                            <td class="px-6 py-4 text-gray-500">2025-01-10</td>
-                                        </tr>
-                                        <tr class="hover:bg-gray-50 transition-colors">
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="flex items-center">
-                                                    <img src="/api/placeholder/32/32" class="rounded-full mr-3">
-                                                    Bob Smith
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-4">
-                                                <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-medium">
-                                                    Advanced Web Development
-                                                </span>
-                                            </td>
-                                            <td class="px-6 py-4 text-gray-500">2025-01-09</td>
-                                        </tr>
-                                        <tr class="hover:bg-gray-50 transition-colors">
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="flex items-center">
-                                                    <img src="/api/placeholder/32/32" class="rounded-full mr-3">
-                                                    Catherine Brown
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-4">
-                                                <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
-                                                    Data Science Basics
-                                                </span>
-                                            </td>
-                                            <td class="px-6 py-4 text-gray-500">2025-01-08</td>
-                                        </tr> -->
                                     </tbody>
                                 </table>
                             </div>

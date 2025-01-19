@@ -27,4 +27,22 @@
                 return null;
             }
         }
+
+        public function addTags($conn){
+            $addTags = $conn->prepare("INSERT INTO tags(name) VALUES(:tag)");
+            $addTags->bindParam(":tag",$this->name);
+            if ($addTags->execute()) {
+                return $conn->lastInsertId();
+            } else {
+                return false;
+            }
+        }
+
+        public function addAssocTags($tag,$cours,$conn){
+            $this->id_tag = $tag;
+            $addAssoc = $conn->prepare("INSERT INTO tags_cours(id_tag,id_cours) VALUES(:tag,:cours)");
+            $addAssoc->bindParam(":tag",$this->id_tag);
+            $addAssoc->bindParam(":cours",$cours);
+            $addAssoc->execute();
+        }
     }
