@@ -55,6 +55,9 @@
                     }else if($getUser['statut'] === 'block'){
                         $_SESSION['logError'] = 'This account is banned!';
                         header('Location: ../view/login/login.php');
+                    }else if($getUser['statut'] === 'reject'){
+                        $_SESSION['logError'] = 'This account is rejected!';
+                        header('Location: ../view/login/login.php');
                     }else{
                         $_SESSION['logError'] = 'Error try again!';
                         header('Location: ../view/login/login.php');
@@ -126,5 +129,39 @@
             }
 
             
+        }
+
+
+        public static function getUsers($conn){
+            $getUsers = $conn->prepare("SELECT * FROM users INNER JOIN role ON users.role = role.id_role WHERE name != 'admin'");
+            if($getUsers->execute()){
+                return $getUsers;
+            }else{
+                return null;
+            }
+        }
+
+        public function manageUser($id,$status,$conn){
+            $this->id_user = $id;
+            $this->status = $status;
+            $changeStatus = $conn->prepare("UPDATE users SET statut = :getStatus WHERE id_user = :getID");
+            $changeStatus->bindParam(":getStatus",$this->status);
+            $changeStatus->bindParam(":getID",$this->id_user);
+            if($changeStatus->execute()){
+                return true;
+            }else{
+                return false;
+            }
+        }
+
+        public function removeUser($id,$conn){
+            $this->id_user = $id;
+            $changeStatus = $conn->prepare("DELETE FROM users WHERE id_user = :getID");
+            $changeStatus->bindParam(":getID",$this->id_user);
+            if($changeStatus->execute()){
+                return true;
+            }else{
+                return false;
+            }
         }
     }

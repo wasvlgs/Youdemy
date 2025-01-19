@@ -1,8 +1,8 @@
 <?php
 
 
-    session_start();
-
+    require_once '../../classes/database.php';
+    require_once '../../classes/user.php';
 
     if(isset($_SESSION['id']) && isset($_SESSION['role']) && $_SESSION['role'] == 1){
 
@@ -72,36 +72,82 @@
                     <!-- User Cards -->
                     <section>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <!-- Teacher Card -->
-                            <div class="bg-white shadow rounded-lg p-6 flex items-center justify-between">
-                                <div>
-                                    <h3 class="font-bold text-gray-800">John Doe</h3>
-                                    <p class="text-gray-600">Enseignant</p>
-                                </div>
-                                <div class="space-x-2">
-                                    <button class="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600">
-                                        <i class="fas fa-check"></i> Accepter
-                                    </button>
-                                    <button class="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600">
-                                        <i class="fas fa-times"></i> Rejeter
-                                    </button>
-                                </div>
-                            </div>
-                            <!-- Student Card -->
-                            <div class="bg-white shadow rounded-lg p-6 flex items-center justify-between">
-                                <div>
-                                    <h3 class="font-bold text-gray-800">Jane Smith</h3>
-                                    <p class="text-gray-600">Étudiant</p>
-                                </div>
-                                <button class="bg-yellow-500 text-white py-2 px-4 rounded-lg hover:bg-yellow-600">
-                                    <i class="fas fa-ban"></i> Bloquer
-                                </button>
-                            </div>
+                            <?php 
+                            
+                                $getUsers = user::getUsers(Database::getInstance()->getConnect());
+                                if($getUsers != null && $getUsers->rowCount() > 0){
+                                    foreach($getUsers as $user){
+                                        $buttons = '';
+                                        if($user['name'] === "student"){
+                                            if($user['statut'] === "active"){
+                                                $buttons = '
+                                                        <button value="'.$user['id_user'].'" value="'.$user['id_user'].'" name="block" class="bg-yellow-500 text-white py-2 px-4 rounded-lg hover:bg-yellow-600">
+                                                            <i class="fas fa-ban"></i> Bloquer
+                                                        </button><button value="'.$user['id_user'].'" name="delete" class="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600">
+                                                            <i class="fas fa-times"></i> Delete
+                                                        </button>';
+                                            }elseif($user['statut'] === "block"){
+                                                $buttons = '<button value="'.$user['id_user'].'" name="active" class="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600">
+                                                        <i class="fas fa-check"></i> Active
+                                                    </button><button value="'.$user['id_user'].'" name="delete" class="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600">
+                                                            <i class="fas fa-times"></i> Delete
+                                                        </button>';
+                                            }else{
+                                                $buttons = '<button value="'.$user['id_user'].'" name="delete" class="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600">
+                                                            <i class="fas fa-times"></i> Delete
+                                                        </button>';
+                                            }
+                                        }elseif($user['name'] === "teacher"){
+                                            if($user['statut'] === "active"){
+                                                $buttons = '
+                                                        <button value="'.$user['id_user'].'" name="block" class="bg-yellow-500 text-white py-2 px-4 rounded-lg hover:bg-yellow-600">
+                                                            <i class="fas fa-ban"></i> Bloquer
+                                                        </button><button value="'.$user['id_user'].'" name="delete" class="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600">
+                                                            <i class="fas fa-times"></i> Delete
+                                                        </button>';
+                                            }elseif($user['statut'] === "pending"){
+                                                $buttons = '
+                                                        <button value="'.$user['id_user'].'" name="accept" class="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600">
+                                                        <i class="fas fa-check"></i> Accepter
+                                                    </button>
+                                                    <button value="'.$user['id_user'].'" name="reject" class="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600">
+                                                        <i class="fas fa-times"></i> Rejeter
+                                                    </button>';
+                                            }elseif($user['statut'] === "block"){
+                                                $buttons = '<button value="'.$user['id_user'].'" name="active" class="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600">
+                                                <i class="fas fa-check"></i> Active
+                                            </button><button value="'.$user['id_user'].'" name="delete" class="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600">
+                                                    <i class="fas fa-times"></i> Delete
+                                                </button>';
+                                            }else{
+                                                $buttons = '<button value="'.$user['id_user'].'" name="delete" class="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600">
+                                                            <i class="fas fa-times"></i> Delete
+                                                        </button>';
+                                            }
+                                        }
+                                        echo '<div class="bg-white shadow rounded-lg p-6 flex items-center justify-between">
+                                        <div>
+                                            <h3 class="font-bold text-gray-800">'.$user['prenom'].' '.$user['nom'].'</h3>
+                                            <p class="text-gray-600">'.$user['name'].'</p>
+                                        </div>
+                                        <form method="POST" class="space-x-2">
+                                            '.$buttons.'
+                                        </form>
+                                    </div>';
+                                    }
+                                }else{
+                                    echo 'No users exict';
+                                }
+                            ?>
+
                         </div>
                     </section>
                 </div>
             </main>
         </div>
     </div>
+    <script>
+        
+    </script>
 </body>
 </html>

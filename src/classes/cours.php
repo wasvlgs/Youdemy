@@ -296,6 +296,40 @@
                 return null;
             }
         }
+
+        public static function getAllPendingCourses($conn){
+
+            $getCourses = $conn->prepare("SELECT * FROM cours INNER JOIN users ON cours.id_user = users.id_user INNER JOIN categorie ON categorie.id_categorie = cours.id_categorie WHERE id_approved = 0");
+            if($getCourses->execute()){
+                return $getCourses;
+            }else{
+                return null;
+            }
+        }
+
+        public function accepteCourse($id,$conn){
+
+            $this->id_cours = $id;
+            $accept = $conn->prepare("UPDATE cours SET id_approved = 1 WHERE id_cours = :getID");
+            $accept->bindParam(":getID",$this->id_cours);
+            if($accept->execute()){
+                return true;
+            }else{
+                return false;
+            }
+        }
+
+        public function rejectCourse($id,$conn){
+
+            $this->id_cours = $id;
+            $accept = $conn->prepare("DELETE FROM cours WHERE id_cours = :getID");
+            $accept->bindParam(":getID",$this->id_cours);
+            if($accept->execute()){
+                return true;
+            }else{
+                return false;
+            }
+        }
     }
 
 
