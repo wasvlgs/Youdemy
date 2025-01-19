@@ -45,4 +45,13 @@
             $addAssoc->bindParam(":cours",$cours);
             $addAssoc->execute();
         }
+
+        public static function getTags($conn){
+            $getTags = $conn->prepare("SELECT * FROM tags");
+            if($getTags->execute()){
+                return $getTags;
+            }else{
+                return null;
+            }
+        }
     }

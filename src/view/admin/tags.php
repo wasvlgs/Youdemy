@@ -2,7 +2,8 @@
 
 
     session_start();
-
+    require_once '../../classes/database.php';
+    require_once '../../classes/tags.php';
 
     if(isset($_SESSION['id']) && isset($_SESSION['role']) && $_SESSION['role'] == 1){
 
@@ -78,14 +79,14 @@
             <main class="flex-1 p-6 overflow-auto">
                 <div class="max-w-5xl mx-auto">
                     <!-- Tag Management -->
-                    <section class="mb-6">
+                    <div class="mb-6">
                         <h1 class="text-2xl font-bold text-gray-800 mb-4">Gérer les tags</h1>
                         <!-- Button to open modal for adding a tag -->
                         <button data-modal="addTagModal" class="flex items-center space-x-2 bg-indigo-500 text-white py-2 px-4 rounded-lg hover:bg-indigo-600">
                             <i class="fas fa-plus-circle"></i>
                             <span>Ajouter un tag</span>
                         </button>
-                    </section>
+                    </div>
 
                     <!-- Tags Table -->
                     <section>
@@ -97,11 +98,34 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Example Tags (These would be dynamically generated with PHP) -->
-                                <tr>
+                                <?php
+
+                                    $getTags = tags::getTags(Database::getInstance()->getConnect());
+                                    if($getTags != null && $getTags->rowCount() > 0){
+                                        foreach($getTags as $tag){
+                                            echo '<tr>
+                                            <td class="py-3 px-6">'.$tag['name'].'</td>
+                                            <td class="py-3 px-6">
+                                                <button data-modal="editTagModal" data-tag-id="1" class="bg-yellow-500 text-white py-2 px-4 rounded-lg hover:bg-yellow-600">
+                                                    <i class="fas fa-edit"></i> Modifier
+                                                </button>
+                                                <form action="delete_tag.php" method="POST" class="inline">
+                                                    <input type="hidden" name="tag_id" value="1">
+                                                    <button type="submit" class="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600">
+                                                        <i class="fas fa-trash"></i> Supprimer
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>';
+                                        }
+                                    }else{
+                                        echo 'No tag exict!';
+                                    }
+
+                                ?>
+                                <!-- <tr>
                                     <td class="py-3 px-6">Tag Example 1</td>
                                     <td class="py-3 px-6">
-                                        <!-- Edit Button opens modal with tag ID -->
                                         <button data-modal="editTagModal" data-tag-id="1" class="bg-yellow-500 text-white py-2 px-4 rounded-lg hover:bg-yellow-600">
                                             <i class="fas fa-edit"></i> Modifier
                                         </button>
@@ -112,22 +136,8 @@
                                             </button>
                                         </form>
                                     </td>
-                                </tr>
-                                <tr>
-                                    <td class="py-3 px-6">Tag Example 2</td>
-                                    <td class="py-3 px-6">
-                                        <!-- Edit Button opens modal with tag ID -->
-                                        <button data-modal="editTagModal" data-tag-id="2" class="bg-yellow-500 text-white py-2 px-4 rounded-lg hover:bg-yellow-600">
-                                            <i class="fas fa-edit"></i> Modifier
-                                        </button>
-                                        <form action="delete_tag.php" method="POST" class="inline">
-                                            <input type="hidden" name="tag_id" value="2">
-                                            <button type="submit" class="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600">
-                                                <i class="fas fa-trash"></i> Supprimer
-                                            </button>
-                                        </form>
-                                    </td>
-                                </tr>
+                                </tr> -->
+
                             </tbody>
                         </table>
                     </section>
@@ -141,12 +151,12 @@
         <!-- Modal content for adding a tag -->
         <div class="modal" id="addTagModal">
             <h2 class="text-2xl font-bold mb-4">Ajouter un tag</h2>
-            <form action="add_tag.php" method="POST">
+            <form action="../../controller/ajouterTagController.php" method="POST">
                 <label for="tagName" class="block text-gray-700">Nom du tag</label>
                 <input id="tagName" name="tag_name" type="text" class="w-full px-4 py-2 border rounded-lg mb-4" placeholder="Nom du tag" required>
                 
                 <div class="flex space-x-4">
-                    <button type="submit" class="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600">Ajouter</button>
+                    <button name="addTag" type="submit" class="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600">Ajouter</button>
                     <button type="button" class="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600" onclick="closeModal()">Annuler</button>
                 </div>
             </form>
@@ -159,19 +169,68 @@
         <div class="modal" id="editTagModal">
             <h2 class="text-2xl font-bold mb-4">Modifier le tag</h2>
             <form action="edit_tag.php" method="POST">
-                <input type="hidden" name="tag_id" id="editTagId">
                 <label for="editTagName" class="block text-gray-700">Nom du tag</label>
                 <input id="editTagName" name="tag_name" type="text" class="w-full px-4 py-2 border rounded-lg mb-4" placeholder="Nom du tag" required>
                 
                 <div class="flex space-x-4">
-                    <button type="submit" class="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600">Modifier</button>
+                    <button id="editTagId" name="edit" type="submit" class="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600">Modifier</button>
                     <button type="button" class="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600" onclick="closeEditModal()">Annuler</button>
                 </div>
             </form>
         </div>
     </div>
 
+    <!-- Alert Container (Initially hidden) -->
+    <div id="alert-container" class="fixed top-0 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-lg p-4 mb-4 hidden rounded-lg">
+        <!-- Success Alert -->
+        <div id="success-alert" class="alert hidden p-4 mb-4 text-green-700 bg-green-100 rounded-lg shadow-md w-full">
+            <span id="success-message" class="font-medium">Success! Your action was completed.</span>
+        </div>
+
+        <!-- Error Alert -->
+        <div id="error-alert" class="alert hidden p-4 mb-4 text-red-700 bg-red-100 rounded-lg shadow-md w-full">
+            <span id="error-message" class="font-medium">Error! Something went wrong.</span>
+        </div>
+    </div>
+
     <script>
+        <?php
+        if(isset($_SESSION['alert'])){
+            echo $_SESSION['alert'];
+            unset($_SESSION['alert']);
+        }
+        ?>
+        // Function to display the alert (success or error)
+        function showAlert(type, message) {
+        const alertContainer = document.getElementById('alert-container');
+        const successAlert = document.getElementById('success-alert');
+        const errorAlert = document.getElementById('error-alert');
+        const successMessage = document.getElementById('success-message');
+        const errorMessage = document.getElementById('error-message');
+
+        // Set the alert message
+        if (type === 'success') {
+            successMessage.textContent = message;
+            successAlert.classList.remove('hidden');
+            errorAlert.classList.add('hidden');
+        } else if (type === 'error') {
+            errorMessage.textContent = message;
+            errorAlert.classList.remove('hidden');
+            successAlert.classList.add('hidden');
+        }
+
+        // Show the alert container
+        alertContainer.classList.remove('hidden');
+
+        // Automatically close the alert after 3 seconds
+        setTimeout(closeAlert, 2000);
+        }
+
+        // Function to close the alert
+        function closeAlert() {
+        const alertContainer = document.getElementById('alert-container');
+        alertContainer.classList.add('hidden');
+        }
         // Open modal for adding tag
         document.querySelectorAll('[data-modal="addTagModal"]').forEach(button => {
             button.addEventListener('click', () => {
