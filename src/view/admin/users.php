@@ -1,6 +1,6 @@
 <?php
 
-
+    
     require_once '../../classes/database.php';
     require_once '../../classes/user.php';
 
@@ -54,18 +54,18 @@
                     <section class="mb-6">
                         <h1 class="text-2xl font-bold text-gray-800 mb-4">Gérer les utilisateurs</h1>
                         <div class="flex space-x-4">
-                            <button class="flex items-center space-x-2 bg-indigo-500 text-white py-2 px-4 rounded-lg hover:bg-indigo-600">
+                            <a href="users.php" class="flex items-center space-x-2 bg-indigo-500 text-white py-2 px-4 rounded-lg hover:bg-indigo-600">
                                 <i class="fas fa-users"></i>
                                 <span>Tous</span>
-                            </button>
-                            <button class="flex items-center space-x-2 bg-indigo-500 text-white py-2 px-4 rounded-lg hover:bg-indigo-600">
+                            </a>
+                            <a href="users.php?users=teachers" class="flex items-center space-x-2 bg-indigo-500 text-white py-2 px-4 rounded-lg hover:bg-indigo-600">
                                 <i class="fas fa-chalkboard-teacher"></i>
                                 <span>Enseignants</span>
-                            </button>
-                            <button class="flex items-center space-x-2 bg-indigo-500 text-white py-2 px-4 rounded-lg hover:bg-indigo-600">
+                            </a>
+                            <a href="users.php?users=students" class="flex items-center space-x-2 bg-indigo-500 text-white py-2 px-4 rounded-lg hover:bg-indigo-600">
                                 <i class="fas fa-user-graduate"></i>
                                 <span>Étudiants</span>
-                            </button>
+                            </a>
                         </div>
                     </section>
 
@@ -73,15 +73,19 @@
                     <section>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <?php 
+                                $filter = '';
+                                if(isset($_GET['users']) && ($_GET['users'] === "teachers" || $_GET['users'] === "students")){
+                                    $filter = $_GET['users'];
+                                }
                             
-                                $getUsers = user::getUsers(Database::getInstance()->getConnect());
+                                $getUsers = user::getUsers(Database::getInstance()->getConnect(),$filter);
                                 if($getUsers != null && $getUsers->rowCount() > 0){
                                     foreach($getUsers as $user){
                                         $buttons = '';
                                         if($user['name'] === "student"){
                                             if($user['statut'] === "active"){
                                                 $buttons = '
-                                                        <button value="'.$user['id_user'].'" value="'.$user['id_user'].'" name="block" class="bg-yellow-500 text-white py-2 px-4 rounded-lg hover:bg-yellow-600">
+                                                        <button value="'.$user['id_user'].'" name="block" class="bg-yellow-500 text-white py-2 px-4 rounded-lg hover:bg-yellow-600">
                                                             <i class="fas fa-ban"></i> Bloquer
                                                         </button><button value="'.$user['id_user'].'" name="delete" class="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600">
                                                             <i class="fas fa-times"></i> Delete
@@ -130,7 +134,7 @@
                                             <h3 class="font-bold text-gray-800">'.$user['prenom'].' '.$user['nom'].'</h3>
                                             <p class="text-gray-600">'.$user['name'].'</p>
                                         </div>
-                                        <form method="POST" class="space-x-2">
+                                        <form action="../../controller/manageUsersController.php" method="POST" class="space-x-2">
                                             '.$buttons.'
                                         </form>
                                     </div>';
@@ -146,8 +150,57 @@
             </main>
         </div>
     </div>
+        <!-- Alert Container (Initially hidden) -->
+        <div id="alert-container" class="fixed top-0 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-lg p-4 mb-4 hidden rounded-lg">
+        <!-- Success Alert -->
+        <div id="success-alert" class="alert hidden p-4 mb-4 text-green-700 bg-green-100 rounded-lg shadow-md w-full">
+            <span id="success-message" class="font-medium">Success! Your action was completed.</span>
+        </div>
+
+        <!-- Error Alert -->
+        <div id="error-alert" class="alert hidden p-4 mb-4 text-red-700 bg-red-100 rounded-lg shadow-md w-full">
+            <span id="error-message" class="font-medium">Error! Something went wrong.</span>
+        </div>
+    </div>
     <script>
-        
+        <?php
+
+if(isset($_SESSION['alert'])){
+    echo $_SESSION['alert'];
+    unset($_SESSION['alert']);
+}
+?>
+// Function to display the alert (success or error)
+function showAlert(type, message) {
+const alertContainer = document.getElementById('alert-container');
+const successAlert = document.getElementById('success-alert');
+const errorAlert = document.getElementById('error-alert');
+const successMessage = document.getElementById('success-message');
+const errorMessage = document.getElementById('error-message');
+
+// Set the alert message
+if (type === 'success') {
+    successMessage.textContent = message;
+    successAlert.classList.remove('hidden');
+    errorAlert.classList.add('hidden');
+} else if (type === 'error') {
+    errorMessage.textContent = message;
+    errorAlert.classList.remove('hidden');
+    successAlert.classList.add('hidden');
+}
+
+// Show the alert container
+alertContainer.classList.remove('hidden');
+
+// Automatically close the alert after 3 seconds
+setTimeout(closeAlert, 2000);
+}
+
+// Function to close the alert
+function closeAlert() {
+const alertContainer = document.getElementById('alert-container');
+alertContainer.classList.add('hidden');
+}
     </script>
 </body>
 </html>

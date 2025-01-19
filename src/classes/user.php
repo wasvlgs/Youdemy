@@ -2,7 +2,7 @@
 
     session_start();
 
-    abstract class user{
+    class user{
 
         protected $id_user;
         protected $nom;
@@ -12,7 +12,7 @@
         protected $type;
         protected $status;
 
-        public function __construct($status,$id_user,$nom,$prenom,$email,$password,$type)
+        public function __construct($status = null,$id_user = null,$nom = null,$prenom = null,$email = null,$password = null,$type = null)
         {
             $this->id_user = $id_user;
             $this->nom = $nom;
@@ -109,13 +109,13 @@
                $addUser->bindParam(":getRole",$this->type,PDO::PARAM_INT);
                $addUser->bindParam(":getStatus",$this->status,PDO::PARAM_STR);
                if ($addUser->execute()) {
-                $_SESSION['id'] = $conn->lastInsertId();
-                $_SESSION['role'] = $this->type;
                 if ($r === 'teacher') {
                     $_SESSION['success'] = 'Your account has been created, wait for verification!';
-                    header('Location: ../view/teacher/dashboard.php');
+                    header('Location: ../view/login/login.php');
                 } else if ($r === 'student') {
                     header('Location: ../view/catalogue.php');
+                    $_SESSION['id'] = $conn->lastInsertId();
+                    $_SESSION['role'] = $this->type;
                 } else {
                     header('Location: ../view/login/login.php');
                 }
@@ -132,8 +132,15 @@
         }
 
 
-        public static function getUsers($conn){
-            $getUsers = $conn->prepare("SELECT * FROM users INNER JOIN role ON users.role = role.id_role WHERE name != 'admin'");
+        public static function getUsers($conn,$filter){
+            if($filter && $filter === "teachers"){
+                $getUsers = $conn->prepare("SELECT * FROM users INNER JOIN role ON users.role = role.id_role WHERE name != 'admin' AND name = 'teacher'");
+            }elseif($filter && $filter === "students"){
+                $getUsers = $conn->prepare("SELECT * FROM users INNER JOIN role ON users.role = role.id_role WHERE name != 'admin' AND name = 'student'");
+            }else{
+                $getUsers = $conn->prepare("SELECT * FROM users INNER JOIN role ON users.role = role.id_role WHERE name != 'admin'");
+            }
+            
             if($getUsers->execute()){
                 return $getUsers;
             }else{
