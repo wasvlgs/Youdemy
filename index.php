@@ -2,7 +2,8 @@
 <?php
 
     session_start();
-
+    require_once 'src/classes/database.php';
+    require_once 'src/classes/cours.php';
 
 
 
@@ -106,88 +107,46 @@
             </div>
 
             <div class="grid md:grid-cols-3 gap-8">
-                
+            <?php
+
+                    $getBestCours = cours::bestThreeCours(Database::getInstance()->getConnect());
+                    if($getBestCours != null && $getBestCours->rowCount() > 0){
+                    foreach($getBestCours as $cours){
+                        $getDesc = substr($cours['titre'],0,100);
+                        echo '<div class="bg-white rounded-2xl shadow-lg overflow-hidden group hover:shadow-xl transition-all duration-300">
+                        <div class="relative">
+                            <img src="public/img/coursImage/'.$cours['imgSrc'].'" alt="Course Title" class="w-full h-48 object-cover" />
+                            <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium">
+                                '.$cours['name'].'
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold mb-2 hover:text-indigo-600 transition-colors">'.$cours['titre'].'</h3>
+                            <p class="text-gray-600 mb-4">'.$getDesc.'</p>
+                            <div class="flex items-center justify-between">
+                                
+                                <a target="_blank" href="src/view/cour.php?cours='.$cours['id_cours'].'" class="px-4 py-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition-colors">
+                                    Get Course
+                                </a>
+                            </div>
+                            <div class="text-sm text-gray-500 mt-4">
+                                Created: '.$cours['date_create'].'
+                            </div>
+                        </div>
+                    </div>';
+                    }
+                }else{
+                    echo 'No cours exict yet!';
+                }
+            
+                ?>
 
 
                 <!-- Course Card (simplified) -->
-<div class="bg-white rounded-2xl shadow-lg overflow-hidden group hover:shadow-xl transition-all duration-300">
-    <div class="relative">
-        <img src="/api/placeholder/400/250" alt="Course Title" class="w-full h-48 object-cover" />
-        <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium">
-            $89.99
-        </div>
-    </div>
-    <div class="p-6">
-        <h3 class="text-xl font-semibold mb-2 hover:text-indigo-600 transition-colors">Course Title</h3>
-        <p class="text-gray-600 mb-4">Brief course description goes here.</p>
-        <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-                <img src="/api/placeholder/32/32" alt="Instructor" class="w-8 h-8 rounded-full" />
-                <span class="text-sm text-gray-600">Instructor Name</span>
-            </div>
-            <button class="px-4 py-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition-colors">
-                Get Course
-            </button>
-        </div>
-        <div class="text-sm text-gray-500 mt-4">
-            Created: January 14, 2025
-        </div>
-    </div>
-</div>
 
 
-<!-- Course Card (simplified) -->
-<div class="bg-white rounded-2xl shadow-lg overflow-hidden group hover:shadow-xl transition-all duration-300">
-    <div class="relative">
-        <img src="/api/placeholder/400/250" alt="Course Title" class="w-full h-48 object-cover" />
-        <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium">
-            $89.99
-        </div>
-    </div>
-    <div class="p-6">
-        <h3 class="text-xl font-semibold mb-2 hover:text-indigo-600 transition-colors">Course Title</h3>
-        <p class="text-gray-600 mb-4">Brief course description goes here.</p>
-        <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-                <img src="/api/placeholder/32/32" alt="Instructor" class="w-8 h-8 rounded-full" />
-                <span class="text-sm text-gray-600">Instructor Name</span>
-            </div>
-            <button class="px-4 py-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition-colors">
-                Get Course
-            </button>
-        </div>
-        <div class="text-sm text-gray-500 mt-4">
-            Created: January 14, 2025
-        </div>
-    </div>
-</div>
 
 
-<!-- Course Card (simplified) -->
-<div class="bg-white rounded-2xl shadow-lg overflow-hidden group hover:shadow-xl transition-all duration-300">
-    <div class="relative">
-        <img src="/api/placeholder/400/250" alt="Course Title" class="w-full h-48 object-cover" />
-        <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium">
-            $89.99
-        </div>
-    </div>
-    <div class="p-6">
-        <h3 class="text-xl font-semibold mb-2 hover:text-indigo-600 transition-colors">Course Title</h3>
-        <p class="text-gray-600 mb-4">Brief course description goes here.</p>
-        <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-                <img src="/api/placeholder/32/32" alt="Instructor" class="w-8 h-8 rounded-full" />
-                <span class="text-sm text-gray-600">Instructor Name</span>
-            </div>
-            <button class="px-4 py-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 transition-colors">
-                Get Course
-            </button>
-        </div>
-        <div class="text-sm text-gray-500 mt-4">
-            Created: January 14, 2025
-        </div>
-    </div>
-</div>
 
             </div>
         </div>

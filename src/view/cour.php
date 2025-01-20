@@ -42,6 +42,8 @@
             die('No cour exict');
         }
     }else{
+        session_destroy();
+        header('Location: login/login.php');
         die('No cour exict');
     }
 
