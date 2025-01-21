@@ -16,7 +16,7 @@
 
 
         public static function getCategories($conn){
-            $getData = $conn->prepare("SELECT * FROM categorie");
+            $getData = $conn->prepare("SELECT categorie.id_categorie,name,COUNT(cours.id_cours) as total FROM categorie LEFT JOIN cours ON categorie.id_categorie = cours.id_categorie GROUP BY categorie.id_categorie");
             if($getData->execute()){
                 return $getData;
             }else{
@@ -63,4 +63,6 @@
                 return false;
             }
         }
+
+
     }

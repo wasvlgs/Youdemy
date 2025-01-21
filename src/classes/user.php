@@ -113,9 +113,9 @@
                     $_SESSION['success'] = 'Your account has been created, wait for verification!';
                     header('Location: ../view/login/login.php');
                 } else if ($r === 'student') {
-                    header('Location: ../view/catalogue.php');
                     $_SESSION['id'] = $conn->lastInsertId();
                     $_SESSION['role'] = $this->type;
+                    header('Location: ../view/catalogue.php');
                 } else {
                     header('Location: ../view/login/login.php');
                 }
@@ -167,6 +167,24 @@
             $changeStatus->bindParam(":getID",$this->id_user);
             if($changeStatus->execute()){
                 return true;
+            }else{
+                return false;
+            }
+        }
+
+        public static function totalCountUsers($conn){
+            $getUsers = $conn->prepare("SELECT Count(*) as total FROM users INNER JOIN role ON users.role = role.id_role WHERE name != 'admin' AND statut = 'active'");
+            if($getUsers->execute()){
+                return $getUsers->fetch(PDO::FETCH_ASSOC);
+            }else{
+                return false;
+            }
+        }
+
+        public static function totalCountTeacher($conn){
+            $getUsers = $conn->prepare("SELECT Count(*) as total FROM users INNER JOIN role ON users.role = role.id_role WHERE name = 'teacher' AND statut = 'active'");
+            if($getUsers->execute()){
+                return $getUsers->fetch(PDO::FETCH_ASSOC);
             }else{
                 return false;
             }

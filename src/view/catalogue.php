@@ -235,9 +235,7 @@ if(isset($_POST['logout'])){
         <div class="mt-12 flex justify-center space-x-4">
             <?php
 
-                if(isset($getPages) && $getPages == 1){
-                    echo '<a href="catalogue.php?page=1" class="px-6 py-2 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none transition duration-200">1</a>';
-                }elseif(isset($getPages) && $getPages > 1 && isset($_GET['page'])){
+                if(isset($getPages) && $getPages > 1 && isset($_GET['page'])){
                     if(htmlspecialchars(trim($_GET['page'])) > 1){
                         echo '<a href="'.(htmlspecialchars(trim($_GET['page'])) - 1).'" class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg shadow-md hover:bg-gray-200 focus:outline-none transition duration-200">Previous</a>';
                     }
@@ -245,15 +243,12 @@ if(isset($_POST['logout'])){
                         echo '<a href="catalogue.php?page='.$i.'" class="px-6 py-2 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none transition duration-200">'.$i.'</a>';
                     }
                     echo '<a href="catalogue.php?page='.(htmlspecialchars(trim($_GET['page'])) + 1).'" class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg shadow-md hover:bg-gray-200 focus:outline-none transition duration-200">Next</a>';
+                }elseif(isset($getPages) && $getPages == 1){
+                    echo '<a href="catalogue.php?page=1" class="px-6 py-2 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none transition duration-200">1</a>';
                 }
 
 
             ?>
-            <!-- <a href="#" class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg shadow-md hover:bg-gray-200 focus:outline-none transition duration-200">Previous</a>
-            <a href="#" class="px-6 py-2 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none transition duration-200">1</a>
-            <a href="#" class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg shadow-md hover:bg-gray-200 focus:outline-none transition duration-200">2</a>
-            <a href="#" class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg shadow-md hover:bg-gray-200 focus:outline-none transition duration-200">3</a>
-            <a href="#" class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg shadow-md hover:bg-gray-200 focus:outline-none transition duration-200">Next</a> -->
         </div>
     </main>
 

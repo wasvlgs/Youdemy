@@ -18,9 +18,9 @@
 
 
         public static function getBestTeacher($conn){
-            $getBestTeacher = $conn->prepare("SELECT cours.id_user,nom,prenom, COUNT(DISTINCT users.id_user) AS total FROM users INNER JOIN mycours ON users.id_user = mycours.id_user INNER JOIN cours ON cours.id_cours = mycours.id_cours ORDER BY total DESC LIMIT 1");
+            $getBestTeacher = $conn->prepare("SELECT users.id_user,nom,prenom,COUNT(mycours.id_user) AS total FROM users INNER JOIN cours ON users.id_user = cours.id_user INNER JOIN mycours ON cours.id_cours = mycours.id_cours GROUP BY users.id_user ORDER BY total LIMIT 3");
             if($getBestTeacher->execute()){
-                return $getBestTeacher->fetch(PDO::FETCH_ASSOC);
+                return $getBestTeacher;
             }else{
                 return null;
             }

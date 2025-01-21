@@ -77,4 +77,13 @@
                 return false;
             }
         }
+
+        public static function getSelectTags($conn){
+            $getTags = $conn->prepare("SELECT * FROM tags GROUP BY name");
+            if($getTags->execute()){
+                return $getTags;
+            }else{
+                return null;
+            }
+        }
     }

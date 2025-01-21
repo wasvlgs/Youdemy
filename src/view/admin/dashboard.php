@@ -5,6 +5,7 @@
     require_once '../../classes/teacher.php';
     require_once '../../classes/categorie.php';
     require_once '../../classes/cours.php';
+    require_once '../../classes/user.php';
     $instanceCours = new cours();
 
 
@@ -68,7 +69,7 @@
                                 </div>
                             </div>
                             <h2 class="text-sm font-medium text-gray-600 mb-2">Total Courses</h2>
-                            <p class="text-3xl font-bold text-gray-800">
+                            <p class="text-3xl font-bold text-indigo-600">
                                 <?php
 
                                     $getTotalCours = $instanceCours->getAllCoursCount(Database::getInstance()->getConnect());
@@ -89,7 +90,7 @@
                                 </div>
                             </div>
                             <h2 class="text-sm font-medium text-gray-600 mb-2">Categories</h2>
-                            <p class="text-3xl font-bold text-gray-800">
+                            <p class="text-3xl font-bold text-blue-600">
                                 <?php 
 
                                     $getTotalCategorie = categorie::getCategories(Database::getInstance()->getConnect());
@@ -133,8 +134,11 @@
                                 <?php 
 
                                     $getBestTeacher = prof::getBestTeacher(Database::getInstance()->getConnect());
-                                    if($getBestTeacher != null){
-                                        echo $getBestTeacher['prenom'].' '.$getBestTeacher['nom'];
+                                    if($getBestTeacher != null && $getBestTeacher->rowCount() > 0){
+                                        foreach($getBestTeacher as $teacher){
+                                            echo $teacher['prenom'].' '.$teacher['nom']. '<br>';
+                                        }
+                                        
                                     }else{
                                         echo 'No teacher exict!';
                                     }
@@ -142,6 +146,101 @@
                                 ?>
                             </p>
                         </div>
+
+                        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition-shadow">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="p-3 bg-green-100 rounded-lg">
+                                    <!-- User icon using SVG -->
+                                    <svg class="w-5 h-5 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <h2 class="text-sm font-medium text-gray-600 mb-2">Total Users</h2>
+                            <p class="text-3xl font-bold text-green-600">
+                                <?php
+
+                                    $getCountUsers = user::totalCountUsers(Database::getInstance()->getConnect());
+                                    if($getCountUsers != false){
+                                        echo $getCountUsers['total'];
+                                    }else{
+                                        echo 0;
+                                    }
+                                
+                                ?>
+                            </p>
+                        </div>
+                        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition-shadow">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="p-3 bg-blue-100 rounded-lg">
+                                    <!-- Teacher/chalkboard icon using SVG -->
+                                    <svg class="w-5 h-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <h2 class="text-sm font-medium text-gray-600 mb-2">Total Teachers</h2>
+                            <p class="text-3xl font-bold text-blue-600">
+                            <?php
+
+                                $getCountTeachers = user::totalCountTeacher(Database::getInstance()->getConnect());
+                                if($getCountTeachers != false){
+                                    echo $getCountTeachers['total'];
+                                }else{
+                                    echo 0;
+                                }
+
+                                ?>
+                            </p>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition-shadow">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="p-3 bg-purple-100 rounded-lg">
+                                    <!-- Book/course icon using SVG -->
+                                    <svg class="w-5 h-5 text-purple-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <h2 class="text-sm font-medium text-gray-600 mb-2">Total Courses</h2>
+                            <p class="text-3xl font-bold text-purple-600">
+                            <?php
+
+                                $getCountCours = cours::allCoursCount(Database::getInstance()->getConnect());
+                                if($getCountCours != false){
+                                    echo $getCountCours['total'];
+                                }else{
+                                    echo 0;
+                                }
+
+                                ?>
+                            </p>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition-shadow">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="p-3 bg-yellow-100 rounded-lg">
+                                    <!-- Clock/pending icon using SVG -->
+                                    <svg class="w-5 h-5 text-yellow-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <h2 class="text-sm font-medium text-gray-600 mb-2">Pending Courses</h2>
+                            <p class="text-3xl font-bold text-yellow-600">
+                                <?php
+
+                                    $getCountCours = cours::allCoursPendingCount(Database::getInstance()->getConnect());
+                                    if($getCountCours != false){
+                                        echo $getCountCours['total'];
+                                    }else{
+                                        echo 0;
+                                    }
+
+                                    ?>
+                            </p>
+                            </div>
                     </div>
                 </section>
 
@@ -163,9 +262,12 @@
                                     if($getCategories != null && $getCategories->rowCount() > 0){
                                         foreach($getCategories as $categorie){
                                             echo '<div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
-                                            <span class="font-medium text-gray-700">'.$categorie['name'].'</span>
+                                            <div class="flex flex-col">
+                                                <span class="font-medium text-gray-700">'.$categorie['name'].'</span>
+                                                <span class="text-sm text-gray-500">'.$categorie['total'].' courses</span>
+                                            </div>
                                             <form action="../../controller/removeCategorieController.php" method="post" class="flex items-center space-x-2">
-                                                <button type="button"  onclick="toggleModal(`editCategoryModal`,`'.$categorie['name'].'`,'.$categorie['id_categorie'].')"  class="text-blue-600 hover:text-blue-700 p-2">
+                                                <button type="button" onclick="toggleModal(`editCategoryModal`,`'.$categorie['name'].'`,'.$categorie['id_categorie'].')" class="text-blue-600 hover:text-blue-700 p-2">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
                                                 <button value="'.$categorie['id_categorie'].'" name="remove" class="text-red-600 hover:text-red-700 p-2">

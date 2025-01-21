@@ -3,6 +3,7 @@
     require_once '../../classes/database.php';
     require_once '../../classes/categorie.php';
     require_once '../../classes/cours.php';
+    require_once '../../classes/tags.php';
 
     $getID = '';
     $instanceCours = new cours();
@@ -306,7 +307,17 @@
             // Open the modal
             toggleModal('editCourseModal');
         }
-        const existingTags = ['JavaScript', 'HTML', 'CSS', 'React', 'Node.js']; // Example tags
+        const existingTags = [
+            <?php
+
+                $getTags = tags::getSelectTags(Database::getInstance()->getConnect());
+                if($getTags != null && $getTags->rowCount() > 0){
+                    foreach($getTags as $tag){
+                        echo '`'.$tag['name'].'`,';
+                    }
+                }
+            ?>
+        ]; // Example tags
         let selectedTags = new Set();
 
         function toggleModal(modalId) {

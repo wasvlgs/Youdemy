@@ -339,6 +339,23 @@
                 return null;
             }
         }
+
+        public static function allCoursCount($conn){
+            $getCoursCount = $conn->prepare("SELECT count(*) as total FROM cours WHERE id_approved = '1'");
+            if($getCoursCount->execute()){
+                return $getCoursCount->fetch(PDO::FETCH_ASSOC);
+            }else{
+                return false;
+            }
+        }
+        public static function allCoursPendingCount($conn){
+            $getCoursCount = $conn->prepare("SELECT count(*) as total FROM cours WHERE id_approved = '0'");
+            if($getCoursCount->execute()){
+                return $getCoursCount->fetch(PDO::FETCH_ASSOC);
+            }else{
+                return false;
+            }
+        }
     }
 
 
