@@ -23,6 +23,7 @@
 
 
         public static function getCours($conn,$offSet = 0,$getCategorie = '',$search = ''){
+            $getAllData = $conn->prepare("SELECT * FROM cours INNER JOIN users ON cours.id_user = users.id_user INNER JOIN categorie ON cours.id_categorie = categorie.id_categorie WHERE id_approved = '1'");
             if(!empty($search)){
                 $getSearch = '%' . $search . '%';
                 $getData = $conn->prepare("SELECT * FROM cours INNER JOIN users ON cours.id_user = users.id_user INNER JOIN categorie ON cours.id_categorie = categorie.id_categorie WHERE id_approved = '1' AND (titre LIKE :search OR description LIKE :search) LIMIT 6 offset :offset");
@@ -37,10 +38,10 @@
             $getData->bindParam(":offset",$offSet,PDO::PARAM_INT);
             
             
-            if($getData->execute()){
+            if($getData->execute() && $getAllData->execute()){
                 return [
                     "data"=> $getData,
-                    "pages" => ceil($getData->rowCount()/6),
+                    "pages" => ceil($getAllData->rowCount()/6),
                 ];
             }else{
                 return null;
