@@ -59,7 +59,7 @@
         }
 
         public static function getTags($conn){
-            $getTags = $conn->prepare("SELECT * FROM tags");
+            $getTags = $conn->prepare("SELECT * FROM tags GROUP BY name");
             if($getTags->execute()){
                 return $getTags;
             }else{

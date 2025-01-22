@@ -172,7 +172,7 @@
             }
         }
 
-        public function addCours($id,$titre,$desc,$content,$img,$user,$categorie,$type,$conn){
+        protected function addCours($id,$titre,$desc,$content,$img,$user,$categorie,$type,$conn){
 
             $this->id_cours = $id;
             $this->titre = $titre;
